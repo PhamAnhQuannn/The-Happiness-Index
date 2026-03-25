@@ -1,5 +1,7 @@
 'use client'
 
+/* eslint-disable @next/next/no-img-element */
+
 import { motion, AnimatePresence } from 'framer-motion'
 import type { VisualConfig } from '@/lib/visualMapping'
 import type { DistrictId } from '@/types'
@@ -60,7 +62,6 @@ function DistrictAlertOverlay({ districtId }: { districtId: DistrictId }) {
       />
 
       {/* Effect icon — bottom-left of the district zone */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={effectSrc}
         alt=""

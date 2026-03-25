@@ -399,6 +399,42 @@ export function CityScenePanel() {
         />
       )}
 
+      {/* ── Fog overlay — driven by hope level — z-17 ── */}
+      {visual.atmosphere.fogLevel !== 'none' && (
+        <img
+          src={visual.atmosphere.fogLevel === 'heavy'
+            ? '/assets/overlay-fog-heavy.svg'
+            : '/assets/overlay-fog-light.svg'}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-[5000ms]"
+          style={{
+            zIndex: 17,
+            opacity: visual.atmosphere.fogLevel === 'heavy' ? 0.55 : 0.3,
+          }}
+        />
+      )}
+
+      {/* ── Propaganda signage — controlPressure > 3 — z-18 ── */}
+      {visual.atmosphere.showPropaganda && (
+        <>
+          <img
+            src="/assets/voxel-signage-propaganda.svg"
+            alt=""
+            aria-hidden="true"
+            className="absolute pointer-events-none transition-opacity duration-[3000ms]"
+            style={{ zIndex: 18, width: '9%', bottom: '28%', left: '3%', opacity: 0.6 }}
+          />
+          <img
+            src="/assets/voxel-signage-propaganda.svg"
+            alt=""
+            aria-hidden="true"
+            className="absolute pointer-events-none transition-opacity duration-[3000ms]"
+            style={{ zIndex: 18, width: '8%', bottom: '28%', right: '3%', opacity: 0.5 }}
+          />
+        </>
+      )}
+
       {/* ── Interactive district hotspot overlays ── */}
       <div className="absolute inset-0 z-30">
         {DISTRICT_HOTSPOTS.map((hotspot) => (

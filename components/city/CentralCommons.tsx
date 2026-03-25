@@ -16,8 +16,11 @@ export function CentralCommons({ visual }: CentralCommonsProps) {
   const { commons, stage } = visual
   const isStage4 = stage === 4
 
-  // Opacity of the whole overlay fades as the city becomes more dystopian
-  const overlayOpacity = isStage4 ? 0.25 : stage === 3 ? 0.5 : 0.75
+  // The sprites layer over the photo — keep them subtle enough to feel additive,
+  // not like pasted cutouts. At stage 3–4 the photo is already dystopian so
+  // effects that signal decay (dead trees, dry fountain) are the main signal.
+  // At stage 1–2 the crowd/fountain/trees reinforce the healthy feeling.
+  const overlayOpacity = isStage4 ? 0.4 : stage === 3 ? 0.55 : 0.65
 
   return (
     <div
