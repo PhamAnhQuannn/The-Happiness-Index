@@ -5,11 +5,17 @@
 import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGameStore } from '@/store/gameStore'
+import { deriveVisualConfig } from '@/lib/visualMapping'
+import { CentralCommons } from '@/components/city/CentralCommons'
+import { IncidentOverlay } from '@/components/city/IncidentOverlay'
+import { DistrictTile } from '@/components/city/DistrictTile'
+import { PeopleLayer } from '@/components/city/PeopleLayer'
 import type { DistrictId, StageId, District } from '@/types'
 
 /* ─────────────────────────────────────────────
    Stage → City Image mapping
    Stage 1 (Managed Normalcy)   = Vibrant city, peak happiness
+   Stage 1b                     = Same stage, used on turn 1 before any player actions
    Stage 2 (Regulated Order)    = Slightly muted, still good
    Stage 3 (Efficient Silence)  = Dystopian with first cracks
    Stage 4 (Quiet Utopia)       = Full dystopia, grey & controlled
@@ -21,6 +27,8 @@ const STAGE_IMAGES: Record<StageId, string> = {
   3: '/city/stage-3-efficient-silence.png',
   4: '/city/stage-4-quiet-utopia.png',
 }
+// Fresh-start image — used on turn 1 only, before the player has touched anything
+const STAGE_1B_IMAGE = '/city/stage-1b-managed-normalcy.png'
 
 /* ─────────────────────────────────────────────
    District hotspot zones — positioned over the
@@ -299,8 +307,11 @@ function DistrictHotspotOverlay({
 
 export function CityScenePanel() {
   const stage = useGameStore((s) => s.stage)
+  const turn  = useGameStore((s) => s.turn)
   const districts = useGameStore((s) => s.districts)
-  const hiddenValues = useGameStore((s) => s.hiddenValues)
+  // Derive the full visual config from the entire game state
+  const gameState = useGameStore((s) => s)
+  const visual = useMemo(() => deriveVisualConfig(gameState), [gameState])
 
   const [hoveredDistrict, setHoveredDistrict] = useState<string | null>(null)
 
@@ -310,9 +321,11 @@ export function CityScenePanel() {
     return map
   }, [districts])
 
-  // Freedom-based visual effects
-  const freedom = hiddenValues.freedom
-  const surveillanceOpacity = freedom < 60 ? Math.min(0.35, (60 - freedom) / 120) : 0
+  // Grid opacity now comes from VisualConfig (moved out of inline logic)
+  const surveillanceOpacity = visual.atmosphere.gridOpacity * 0.35
+
+  // Stage 1b: use the fresh-start image on the very first turn (before any actions)
+  const stage1Image = turn === 1 ? STAGE_1B_IMAGE : STAGE_IMAGES[1]
 
   return (
     <div className="relative w-full aspect-[10/7] rounded-lg overflow-hidden bg-[#0a0a10] border border-neutral-800/40 shadow-2xl">
@@ -320,8 +333,8 @@ export function CityScenePanel() {
       {/* ── Stage images with crossfade ── */}
       {([1, 2, 3, 4] as StageId[]).map((s) => (
         <img
-          key={s}
-          src={STAGE_IMAGES[s]}
+          key={s === 1 ? `1-${turn === 1 ? 'b' : 'a'}` : s}
+          src={s === 1 ? stage1Image : STAGE_IMAGES[s]}
           alt={`City at stage ${s}`}
           draggable={false}
           className="absolute inset-0 w-full h-full object-fill select-none"
@@ -341,7 +354,38 @@ export function CityScenePanel() {
         }}
       />
 
-      {/* ── Surveillance grid overlay for low freedom ── */}
+      {/* ── District tile overlays (buildings + effects) — z-11 ── */}
+      <div className="absolute inset-0 z-[11] pointer-events-none">
+        {([
+          { id: 'education',   top: 2,  left: 28, width: 44, height: 19 },
+          { id: 'industrial',  top: 20, left: 1,  width: 24, height: 36 },
+          { id: 'cultural',    top: 20, left: 75, width: 24, height: 36 },
+          { id: 'residential', top: 56, left: 24, width: 52, height: 24 },
+          { id: 'transit',     top: 82, left: 0,  width: 100, height: 18 },
+        ] as { id: DistrictId; top: number; left: number; width: number; height: number }[]).map((d) => (
+          <DistrictTile key={d.id} id={d.id} visual={visual} top={d.top} left={d.left} width={d.width} height={d.height} />
+        ))}
+      </div>
+
+      {/* ── Central Commons vitality overlay — z-12 ── */}
+      <div
+        className="absolute pointer-events-none z-[12]"
+        style={{ top: '24%', left: '26%', width: '48%', height: '30%' }}
+      >
+        <CentralCommons visual={visual} />
+      </div>
+
+      {/* ── People freedom layer — scattered across commons + residential — z-14 ── */}
+      <div className="absolute inset-0 z-[14] pointer-events-none">
+        <PeopleLayer visual={visual} />
+      </div>
+
+      {/* ── Incident alert overlays on district zones — z-13 ── */}
+      <div className="absolute inset-0 z-[13] pointer-events-none">
+        <IncidentOverlay visual={visual} />
+      </div>
+
+      {/* ── Surveillance grid overlay for low freedom — z-15 ── */}
       {surveillanceOpacity > 0 && (
         <div
           className="absolute inset-0 pointer-events-none transition-opacity duration-[4000ms]"
@@ -360,12 +404,48 @@ export function CityScenePanel() {
         <div
           className="absolute inset-0 pointer-events-none transition-opacity duration-[4000ms]"
           style={{
-            zIndex: 12,
+            zIndex: 16,
             backgroundColor: stage === 4
               ? 'rgba(10, 15, 25, 0.25)'
               : 'rgba(10, 12, 20, 0.12)',
           }}
         />
+      )}
+
+      {/* ── Fog overlay — driven by hope level — z-17 ── */}
+      {visual.atmosphere.fogLevel !== 'none' && (
+        <img
+          src={visual.atmosphere.fogLevel === 'heavy'
+            ? '/assets/overlay-fog-heavy.svg'
+            : '/assets/overlay-fog-light.svg'}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-[5000ms]"
+          style={{
+            zIndex: 17,
+            opacity: visual.atmosphere.fogLevel === 'heavy' ? 0.55 : 0.3,
+          }}
+        />
+      )}
+
+      {/* ── Propaganda signage — controlPressure > 3 — z-18 ── */}
+      {visual.atmosphere.showPropaganda && (
+        <>
+          <img
+            src="/assets/voxel-signage-propaganda.svg"
+            alt=""
+            aria-hidden="true"
+            className="absolute pointer-events-none transition-opacity duration-[3000ms]"
+            style={{ zIndex: 18, width: '9%', bottom: '28%', left: '3%', opacity: 0.6 }}
+          />
+          <img
+            src="/assets/voxel-signage-propaganda.svg"
+            alt=""
+            aria-hidden="true"
+            className="absolute pointer-events-none transition-opacity duration-[3000ms]"
+            style={{ zIndex: 18, width: '8%', bottom: '28%', right: '3%', opacity: 0.5 }}
+          />
+        </>
       )}
 
       {/* ── Interactive district hotspot overlays ── */}

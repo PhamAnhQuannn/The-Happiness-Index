@@ -19,6 +19,25 @@ import type {
 } from '@/types'
 import { DISTRICTS } from '@/data/districts'
 import { simulateTurn, drawPolicyHand } from '@/lib/turnEngine'
+import { getIncidentsAvailableAtTurn } from '@/data/incidents'
+
+function weightedPick<T extends { weight: number }>(pool: T[], count: number): T[] {
+  const selected: T[] = []
+  const remaining = [...pool]
+  for (let i = 0; i < count && remaining.length > 0; i++) {
+    const totalWeight = remaining.reduce((s, item) => s + item.weight, 0)
+    let rand = Math.random() * totalWeight
+    const idx = remaining.findIndex((item) => {
+      rand -= item.weight
+      return rand <= 0
+    })
+    if (idx >= 0) {
+      selected.push(remaining[idx])
+      remaining.splice(idx, 1)
+    }
+  }
+  return selected
+}
 
 // ── Starting values (docs/11-balance-values.md) ──
 
@@ -70,6 +89,19 @@ function buildInitialState(): GameState {
     lastFeedback: null,
     ending: null,
   }
+}
+
+function buildSeededInitialState(): GameState {
+  const base = buildInitialState()
+  base.policyHandIds = drawPolicyHand(1, [])
+  const pool = getIncidentsAvailableAtTurn(1, [])
+  const picked = weightedPick(pool, 2)
+  base.activeIncidents = picked.map((inc) => ({
+    incidentId: inc.id,
+    unresolvedTurns: 0,
+    escalated: false,
+  }))
+  return base
 }
 
 // ── Store interface ───────────────────────────
@@ -268,6 +300,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
   // ── Reset ─────────────────────────────────────
 
   resetGame() {
-    set(buildInitialState())
+    set(buildSeededInitialState())
   },
 }))
