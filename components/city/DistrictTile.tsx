@@ -1,100 +1,136 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import type { DistrictId } from '@/types'
+import { motion, AnimatePresence } from 'framer-motion'
 import type { VisualConfig } from '@/lib/visualMapping'
+import type { DistrictId } from '@/types'
 
 interface DistrictTileProps {
   id: DistrictId
   visual: VisualConfig
-  /** Position as % of the city panel container */
-  top: number
-  left: number
-  width: number
-  height: number
+  // Position as % of the city scene container — matches DISTRICT_HOTSPOTS
+  position: { top: number; left: number; width: number; height: number }
 }
 
-/**
- * Per-district effect overlay — sits on top of the existing city photo.
- *
- * Design rule: The city photo already contains the buildings. This component
- * does NOT re-draw buildings. Instead it adds:
- *   - A dim/dark colour wash over the district zone (stage-driven)
- *   - Smoke effect (industrial only, stress > 60 or incident)
- *   - Barrier gate (transit only, freedom < 40)
- *   - Surveillance camera badge (all districts, freedom < 60)
- *
- * All effects animate in/out smoothly so transitions feel alive.
- */
-export function DistrictTile({ id, visual, top, left, width, height }: DistrictTileProps) {
+// Primary building asset per district
+const BUILDING_ASSET: Record<DistrictId, string> = {
+  residential: '/assets/voxel-building-residential.svg',
+  industrial:  '/assets/voxel-warehouse.svg',
+  education:   '/assets/voxel-school-building.svg',
+  cultural:    '/assets/voxel-building-cultural.svg',
+  transit:     '/assets/voxel-train-platform.svg',
+}
+
+// Degraded / dark variant (used at stage 3-4 or dark assetVariant)
+const BUILDING_ASSET_DARK: Partial<Record<DistrictId, string>> = {
+  residential: '/assets/voxel-building-residential-dark.svg',
+}
+
+export function DistrictTile({ id, visual, position }: DistrictTileProps) {
   const dv = visual.districts[id]
-  const isDark = dv.assetVariant === 'dark'
+  if (!dv) return null
+
   const isDim  = dv.assetVariant === 'dim'
+  const isDark = dv.assetVariant === 'dark'
 
-  // Stage-driven colour wash over the district zone.
-  // Keeps the underlying photo visible — just tones it down.
-  const washOpacity  = isDark ? 0.45 : isDim ? 0.22 : 0
-  const washColor    =
-    id === 'cultural' && isDark ? 'rgba(20,20,30,1)' :
-    id === 'cultural' && isDim  ? 'rgba(20,20,30,1)' :
-    'rgba(8,10,18,1)'
+  // Choose building asset — use dark variant if available, else apply CSS filter
+  const buildingAsset =
+    isDark && BUILDING_ASSET_DARK[id]
+      ? BUILDING_ASSET_DARK[id]!
+      : BUILDING_ASSET[id]
 
-  // Cultural gets a greyscale filter applied to the wash so it desaturates.
-  const washFilter =
-    id === 'cultural' && isDark ? 'saturate(0.1) brightness(0.55)' :
-    id === 'cultural' && isDim  ? 'saturate(0.4) brightness(0.75)' :
-    undefined
+  // CSS filter adjustments for dim/dark states
+  const buildingFilter =
+    isDark  ? 'saturate(20%) brightness(55%)' :
+    isDim   ? 'saturate(60%) brightness(80%)' :
+    'none'
 
   return (
     <div
       className="absolute pointer-events-none"
-      style={{ top: `${top}%`, left: `${left}%`, width: `${width}%`, height: `${height}%` }}
+      style={{
+        top:    `${position.top}%`,
+        left:   `${position.left}%`,
+        width:  `${position.width}%`,
+        height: `${position.height}%`,
+        zIndex: 18,
+      }}
     >
-      {/* Stage colour wash — darkens/desaturates the zone as stage progresses */}
-      <motion.div
-        className="absolute inset-0 rounded-sm"
-        animate={{ opacity: washOpacity }}
-        transition={{ duration: 4, ease: 'easeInOut' }}
-        style={{ backgroundColor: washColor, filter: washFilter, mixBlendMode: 'multiply' }}
-      />
-
-      {/* Industrial smoke — fades in when stress > 60 or incident active */}
-      {id === 'industrial' && (
-        <motion.img
-          src="/assets/voxel-smokestack.svg"
-          alt=""
-          aria-hidden="true"
-          animate={{ opacity: dv.showSmoke ? 0.65 : 0 }}
-          transition={{ duration: 2.5, ease: 'easeInOut' }}
-          className="absolute"
-          style={{ width: '32%', bottom: '48%', left: '12%' }}
-        />
-      )}
-
-      {/* Transit barrier gate — slides in when freedom < 40 */}
-      {id === 'transit' && (
-        <motion.img
-          src="/assets/voxel-barrier-gate.svg"
-          alt=""
-          aria-hidden="true"
-          animate={{ opacity: dv.showBarrier ? 0.8 : 0, y: dv.showBarrier ? 0 : 6 }}
-          transition={{ duration: 1.8, ease: 'easeOut' }}
-          className="absolute"
-          style={{ width: '18%', bottom: '18%', left: '38%' }}
-        />
-      )}
-
-      {/* Surveillance camera badge — top-right corner of each district */}
+      {/* Primary building */}
       <motion.img
-        src="/assets/voxel-surveillance-camera.svg"
+        src={buildingAsset}
         alt=""
-        aria-hidden="true"
-        animate={{ opacity: visual.atmosphere.showSurveillance ? (isDark ? 0.7 : 0.45) : 0 }}
-        transition={{ duration: 2.5, ease: 'easeInOut' }}
+        draggable={false}
+        animate={{ filter: buildingFilter, opacity: isDark ? 0.6 : 0.75 }}
+        transition={{ duration: 3, ease: 'easeInOut' }}
         className="absolute"
-        style={{ width: '12%', top: '5%', right: '5%' }}
+        style={{ width: '60%', left: '20%', bottom: '10%' }}
       />
+
+      {/* Industrial: smoke — appears when showSmoke */}
+      {id === 'industrial' && (
+        <AnimatePresence>
+          {dv.showSmoke && (
+            <motion.img
+              key="smoke"
+              src="/assets/voxel-smokestack.svg"
+              alt=""
+              draggable={false}
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 0.7, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+              className="absolute"
+              style={{ width: '22%', right: '18%', top: '8%' }}
+            />
+          )}
+        </AnimatePresence>
+      )}
+
+      {/* Cultural: mural — fades as stage increases */}
+      {id === 'cultural' && (
+        <motion.img
+          src="/assets/voxel-mural-wall.svg"
+          alt=""
+          draggable={false}
+          animate={{ opacity: isDark ? 0.1 : isDim ? 0.35 : 0.65 }}
+          transition={{ duration: 3 }}
+          className="absolute"
+          style={{ width: '35%', right: '5%', bottom: '25%' }}
+        />
+      )}
+
+      {/* Transit: barrier gate — appears when showBarrier */}
+      {id === 'transit' && (
+        <AnimatePresence>
+          {dv.showBarrier && (
+            <motion.img
+              key="barrier"
+              src="/assets/voxel-barrier-gate.svg"
+              alt=""
+              draggable={false}
+              initial={{ opacity: 0, x: -6 }}
+              animate={{ opacity: 0.8, x: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8 }}
+              className="absolute"
+              style={{ width: '15%', left: '30%', bottom: '15%' }}
+            />
+          )}
+        </AnimatePresence>
+      )}
+
+      {/* Surveillance camera — education + transit when atmosphere.showSurveillance */}
+      {(id === 'education' || id === 'transit') && visual.atmosphere.showSurveillance && (
+        <motion.img
+          src="/assets/voxel-surveillance-camera.svg"
+          alt=""
+          draggable={false}
+          animate={{ opacity: visual.atmosphere.gridOpacity * 0.8 }}
+          transition={{ duration: 2 }}
+          className="absolute"
+          style={{ width: '8%', right: '10%', top: '10%' }}
+        />
+      )}
     </div>
   )
 }
-
