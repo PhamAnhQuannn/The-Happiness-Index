@@ -58,16 +58,16 @@ export default function GamePage() {
   const flashRef = useRef<HTMLDivElement>(null)
   const audioReady = useRef(false)
 
-  // Initialise hand on first mount
+  // Seed hand whenever a fresh game starts (mount or after reset)
   useEffect(() => {
-    if (policyHandIds.length === 0 && status === 'playing') {
+    if (status === 'playing' && policyHandIds.length === 0) {
       setHand(drawPolicyHand(turn, []))
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [status, turn, policyHandIds.length, setHand])
 
-  // Initialise starting incidents on first mount
+  // Seed starting incidents whenever a fresh game starts (mount or after reset)
   useEffect(() => {
-    if (activeIncidents.length === 0 && status === 'playing') {
+    if (status === 'playing' && activeIncidents.length === 0) {
       const pool = getIncidentsAvailableAtTurn(turn, [])
       const picked = weightedPick(pool, 2)
       const initial: ActiveIncident[] = picked.map((inc) => ({
@@ -77,7 +77,7 @@ export default function GamePage() {
       }))
       setActiveIncidents(initial)
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [status, turn, activeIncidents.length, setActiveIncidents])
 
   // Detect stage changes → DOM flash + audio transition (no setState in effect)
   useEffect(() => {
