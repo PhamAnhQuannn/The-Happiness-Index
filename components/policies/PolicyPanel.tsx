@@ -6,18 +6,26 @@ import type { Policy } from '@/types'
 
 function PolicyCard({ policy }: { policy: Policy }) {
   const selectedPolicyIds = useGameStore((s) => s.selectedPolicyIds)
-  const remainingCapacity = useGameStore((s) => s.remainingCapacity)
   const selectPolicy = useGameStore((s) => s.selectPolicy)
   const deselectPolicy = useGameStore((s) => s.deselectPolicy)
+  const controlPressure = useGameStore((s) => s.controlPressure)
 
   const isSelected = selectedPolicyIds.includes(policy.id)
 
-  // Disabled if: already at 2 policies, or cost exceeds remaining capacity (unless already selected)
-  const wouldExceedCapacity =
-    !isSelected && policy.cost > remainingCapacity
-  const atMaxSelection =
-    !isSelected && selectedPolicyIds.length >= 2
-  const isDisabled = wouldExceedCapacity || atMaxSelection
+  // Disabled if already at the 2-policy limit (unless this card is already selected)
+  const atMaxSelection = !isSelected && selectedPolicyIds.length >= 2
+  const isDisabled = atMaxSelection
+
+  const isCoercive = policy.specialRules?.includes('coercive') ?? false
+  const hasDelayed = policy.delayedEffects.length > 0
+  // Warn if this coercive card would push CP to a danger threshold
+  const nextCP = isCoercive ? controlPressure + 1 : controlPressure
+  const cpWarning = isCoercive && (nextCP === 3 || nextCP === 5 || nextCP === 7)
+
+  const phaseColor =
+    policy.phase === 'early' ? 'text-blue-500/60' :
+    policy.phase === 'mid'   ? 'text-amber-500/60' :
+                               'text-red-500/60'
 
   function handleClick() {
     if (isSelected) {
@@ -42,17 +50,11 @@ function PolicyCard({ policy }: { policy: Policy }) {
         }
       `}
     >
-      {/* Header */}
-      <div className="flex justify-between items-center mb-1.5">
-        <span className="text-xs font-medium text-neutral-200">{policy.name}</span>
-        <span
-          className={`text-xs font-mono px-1.5 py-0.5 rounded ${
-            isSelected
-              ? 'bg-neutral-700 text-neutral-200'
-              : 'bg-neutral-800 text-neutral-400'
-          }`}
-        >
-          {policy.cost}
+      {/* Header row: name + phase dot */}
+      <div className="flex justify-between items-start mb-1.5 gap-2">
+        <span className="text-xs font-medium text-neutral-200 leading-tight">{policy.name}</span>
+        <span className={`text-[9px] uppercase tracking-widest shrink-0 mt-0.5 ${phaseColor}`}>
+          {policy.phase}
         </span>
       </div>
 
@@ -60,7 +62,7 @@ function PolicyCard({ policy }: { policy: Policy }) {
       <p className="text-xs text-neutral-500 leading-relaxed mb-2">{policy.summary}</p>
 
       {/* Visible effects preview */}
-      <div className="flex flex-wrap gap-1">
+      <div className="flex flex-wrap gap-1 mb-1.5">
         {(Object.entries(policy.immediateEffects) as [string, number][]).map(
           ([key, val]) => (
             <span
@@ -82,6 +84,18 @@ function PolicyCard({ policy }: { policy: Policy }) {
               {val}
             </span>
           )
+        )}
+        {/* Delayed effects warning */}
+        {hasDelayed && (
+          <span className="text-xs px-1 rounded text-amber-500/70 bg-neutral-800">
+            ⏱ delayed
+          </span>
+        )}
+        {/* Coercive warning + CP threshold alert */}
+        {isCoercive && (
+          <span className={`text-xs px-1 rounded bg-neutral-800 ${cpWarning ? 'text-red-400' : 'text-orange-500/70'}`}>
+            {cpWarning ? '⚠ +CP' : '↑CP'}
+          </span>
         )}
       </div>
 
@@ -105,14 +119,14 @@ export function PolicyPanel() {
 
   return (
     <div className="flex flex-col gap-1">
-      <div className="text-xs text-neutral-500 uppercase tracking-widest mb-3 sticky top-0 bg-neutral-950 pb-1">
+      <div className="text-xs text-neutral-500 uppercase tracking-widest mb-2 sticky top-0 bg-neutral-950 pb-1">
         Policies
       </div>
 
       {handPolicies.length === 0 ? (
         <p className="text-xs text-neutral-600 italic">No policies in hand.</p>
       ) : (
-        <div className="flex flex-col gap-2">
+        <div className="grid grid-cols-2 gap-2">
           {handPolicies.map((policy) => (
             <PolicyCard key={policy.id} policy={policy} />
           ))}

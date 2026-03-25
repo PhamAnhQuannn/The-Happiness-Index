@@ -6,9 +6,6 @@ import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGameStore } from '@/store/gameStore'
 import { deriveVisualConfig } from '@/lib/visualMapping'
-import { CentralCommons } from '@/components/city/CentralCommons'
-import { IncidentOverlay } from '@/components/city/IncidentOverlay'
-import { DistrictTile } from '@/components/city/DistrictTile'
 import type { DistrictId, StageId, District } from '@/types'
 
 /* ─────────────────────────────────────────────
@@ -319,7 +316,7 @@ export function CityScenePanel() {
   const surveillanceOpacity = visual.atmosphere.gridOpacity
 
   return (
-    <div className="relative w-full aspect-[10/7] rounded-lg overflow-hidden bg-[#0a0a10] border border-neutral-800/40 shadow-2xl">
+    <div className="relative w-full h-full rounded-lg overflow-hidden bg-[#0a0a10] border border-neutral-800/40 shadow-2xl">
 
       {/* ── Stage images with crossfade ── */}
       {([1, 2, 3, 4] as StageId[]).map((s) => (
@@ -328,7 +325,7 @@ export function CityScenePanel() {
           src={STAGE_IMAGES[s]}
           alt={`City at stage ${s}`}
           draggable={false}
-          className="absolute inset-0 w-full h-full object-fill select-none"
+          className="absolute inset-0 w-full h-full object-contain select-none"
           style={{
             opacity: stage === s ? 1 : 0,
             transition: 'opacity 3s ease-in-out',
@@ -371,26 +368,6 @@ export function CityScenePanel() {
           }}
         />
       )}
-
-      {/* ── District SVG overlays (z:18) ── */}
-      {(['residential', 'industrial', 'education', 'cultural', 'transit'] as DistrictId[]).map((id) => {
-        const hs = DISTRICT_HOTSPOTS.find((h) => h.id === id)
-        if (!hs) return null
-        return (
-          <DistrictTile
-            key={id}
-            id={id}
-            visual={visual}
-            position={{ top: hs.top, left: hs.left, width: hs.width, height: hs.height }}
-          />
-        )
-      })}
-
-      {/* ── Central Commons vitality overlay (z:20) ── */}
-      <CentralCommons visual={visual} />
-
-      {/* ── Incident alert overlays (z:20) ── */}
-      <IncidentOverlay visual={visual} />
 
       {/* ── Interactive district hotspot overlays ── */}
       <div className="absolute inset-0 z-30">

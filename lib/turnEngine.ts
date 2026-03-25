@@ -28,6 +28,7 @@ const GOVERNANCE_CAPACITY = 5
 const HAND_SIZE = 3
 const MAX_POLICIES_PER_TURN = 2
 const BASELINE_RESPONSE_ID = 'POL-01'
+const SYSTEM_COMPLETION_ID = 'POL-30'
 
 // Incident count per phase (docs/11-balance-values.md)
 const INCIDENT_COUNT: Record<Phase, number> = {
@@ -150,8 +151,8 @@ function incidentWeightModifier(
     }
   }
 
-  // Control pressure amplifies civil unrest / misinformation / resistance incidents
-  const resistanceIds = ['INC-02', 'INC-06', 'INC-07', 'INC-08', 'INC-10']
+  // Control pressure amplifies civil unrest / resistance / protest incidents
+  const resistanceIds = ['INC-09', 'INC-11', 'INC-16', 'INC-18', 'INC-22']
   if (controlPressure >= 5 && resistanceIds.includes(inc.id)) bonus += 3
   else if (controlPressure >= 3 && resistanceIds.includes(inc.id)) bonus += 1
 
@@ -208,14 +209,22 @@ export function validatePolicySelection(
     const policy = getPolicyById(id)
     if (!policy) return { valid: false, reason: `Unknown policy: ${id}` }
     if (policy.unlockTurn > turn) return { valid: false, reason: `${policy.name} not yet unlocked.` }
-    if (id === 'POL-16' && state) {
+
+    // Enforce specialRules constraints
+    if (policy.specialRules?.includes('requires-control-pressure-4') && state) {
       if (state.controlPressure < 4) {
-        return { valid: false, reason: 'System Completion requires Control Pressure 4+.' }
-      }
-      if (!districtsAreStable(state)) {
-        return { valid: false, reason: 'System Completion requires all districts stable.' }
+        return { valid: false, reason: `${policy.name} requires Control Pressure 4 or higher.` }
       }
     }
+    if (id === SYSTEM_COMPLETION_ID && state) {
+      if (selectedIds.length > 1) {
+        return { valid: false, reason: 'The Final Index cannot be combined with any other policy.' }
+      }
+      if (!districtsAreStable(state)) {
+        return { valid: false, reason: 'The Final Index requires all districts stable.' }
+      }
+    }
+
     totalCost += policy.cost
   }
 
@@ -286,8 +295,7 @@ export function simulateTurn(prevState: GameState): GameState {
   )
 
   // ── Step 4: Generate new incidents ───────────
-  const existingIds = carriedIncidents.map((ai) => ai.incidentId)
-  const rawPool = getIncidentsAvailableAtTurn(turn, existingIds).filter(
+  const rawPool = getIncidentsAvailableAtTurn(turn).filter(
     (inc) =>
       inc.canRepeat || !prevState.activeIncidents.some((ai) => ai.incidentId === inc.id)
   )
@@ -386,19 +394,20 @@ export function simulateTurn(prevState: GameState): GameState {
     addMetricDelta(policy.immediateEffects)
     addHiddenDelta(policy.hiddenImpact)
 
-  if (isCoercivePolicy(sid)) nextControlPressure += 1
-  if (raisesCompliance(sid)) nextCompliance += sid === 'POL-16' ? 15 : 6
+    if (isCoercivePolicy(sid)) nextControlPressure += 1
+    if (raisesCompliance(sid)) {
+      // Compliance gain scales with policy cost: +5 per cost point, capped at +20
+      nextCompliance += Math.min(policy.cost * 5, 20)
+    }
 
     // Track resolved incidents
     resolvedIncidentIds.push(...policy.resolvedIncidentIds)
 
-    // Schedule delayed effects
+    // Schedule delayed effects (applyOnTurn in data is absolute turn number)
     for (const delayed of policy.delayedEffects) {
       pendingToAdd.push({
         sourcePolicyId: policy.id,
-        applyOnTurn: turn + (delayed.applyOnTurn - policy.unlockTurn > 0
-          ? delayed.applyOnTurn - policy.unlockTurn
-          : 1),
+        applyOnTurn: delayed.applyOnTurn,
         metricDeltas: delayed.metricDeltas,
         hiddenDeltas: delayed.hiddenDeltas,
         description: delayed.description,
@@ -435,6 +444,32 @@ export function simulateTurn(prevState: GameState): GameState {
   )
 
   // ── Step 11: Apply all accumulated deltas ────
+  // Control Pressure 7+: humane policy effects are weakened — reduce the
+  // single largest positive visible benefit from non-coercive policies by 1.
+  if (nextControlPressure >= 7) {
+    const humaneKeys = (Object.keys(totalMetricDeltas) as (keyof MetricSet)[]).filter(
+      (k) => {
+        const v = totalMetricDeltas[k] ?? 0
+        return k !== 'stress' ? v > 0 : v < 0  // stress: negative is beneficial
+      }
+    )
+    if (humaneKeys.length > 0) {
+      // Find the key with the largest beneficial delta
+      const topKey = humaneKeys.reduce((best, k) => {
+        const bv = totalMetricDeltas[best] ?? 0
+        const kv = totalMetricDeltas[k] ?? 0
+        const bBenefit = best !== 'stress' ? bv : -bv
+        const kBenefit = k !== 'stress' ? kv : -kv
+        return kBenefit > bBenefit ? k : best
+      })
+      if (topKey === 'stress') {
+        totalMetricDeltas[topKey] = (totalMetricDeltas[topKey] ?? 0) + 1  // less stress reduction
+      } else {
+        totalMetricDeltas[topKey] = (totalMetricDeltas[topKey] ?? 0) - 1  // less benefit
+      }
+    }
+  }
+
   const metrics = applyDeltasToMetrics(prevState.metrics, totalMetricDeltas)
   const hiddenValues = applyDeltasToHidden(prevState.hiddenValues, totalHiddenDeltas)
   const metricsAfterPenaltyBands = applyDeltasToMetrics(
@@ -443,7 +478,7 @@ export function simulateTurn(prevState: GameState): GameState {
   )
 
   // ── Step 12: Update atmosphere stage ─────────
-  const isSystemCompletion = selectedIds.includes('POL-16')
+  const isSystemCompletion = selectedIds.includes(SYSTEM_COMPLETION_ID)
   const newStage = computeStage(prevStage, turn, hiddenValues, nextControlPressure, isSystemCompletion)
   const updatedDistricts = applyStageToDistricts(prevState.districts, newStage, hiddenValues, nextControlPressure)
 

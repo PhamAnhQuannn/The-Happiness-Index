@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGameStore } from '@/store/gameStore'
 import { CityOverviewPanel } from '@/components/dashboard/CityOverviewPanel'
@@ -10,6 +10,7 @@ import { PolicyPanel } from '@/components/policies/PolicyPanel'
 import { FeedbackPanel } from '@/components/feedback/FeedbackPanel'
 import { EndingScreen } from '@/components/endings/EndingScreen'
 import { CityScenePanel } from '@/components/city/CityScenePanel'
+import { IntroScreen } from '@/components/intro/IntroScreen'
 import { stageCSSFilter } from '@/lib/stageEngine'
 import { drawPolicyHand } from '@/lib/turnEngine'
 import { getIncidentsAvailableAtTurn } from '@/data/incidents'
@@ -51,7 +52,6 @@ export default function GamePage() {
   const setActiveIncidents = useGameStore((s) => s.setActiveIncidents)
   const endTurn = useGameStore((s) => s.endTurn)
   const selectedPolicyIds = useGameStore((s) => s.selectedPolicyIds)
-  const remainingCapacity = useGameStore((s) => s.remainingCapacity)
 
   // Track previous stage to detect transitions
   const prevStageRef = useRef<number>(stage)
@@ -68,7 +68,7 @@ export default function GamePage() {
   // Seed starting incidents whenever a fresh game starts (mount or after reset)
   useEffect(() => {
     if (status === 'playing' && activeIncidents.length === 0) {
-      const pool = getIncidentsAvailableAtTurn(turn, [])
+      const pool = getIncidentsAvailableAtTurn(turn)
       const picked = weightedPick(pool, 2)
       const initial: ActiveIncident[] = picked.map((inc) => ({
         incidentId: inc.id,
@@ -116,6 +116,8 @@ export default function GamePage() {
   const cssFilter = stageCSSFilter(stage)
   const isStage4 = stage === 4
 
+  const [introComplete, setIntroComplete] = useState(false)
+
   return (
     <div
       className="h-screen overflow-hidden bg-neutral-950 text-neutral-200 transition-all duration-[6000ms] flex flex-col"
@@ -139,6 +141,10 @@ export default function GamePage() {
           The Happiness Index
         </h1>
         <div className="flex items-center gap-6 text-xs text-neutral-600">
+          {/* Turn counter */}
+          <span className={isStage4 ? 'text-neutral-700' : 'text-neutral-600'}>
+            Turn {turn} / 12
+          </span>
           {/* Stage name animates when it changes */}
           <AnimatePresence mode="wait">
             <motion.span
@@ -152,33 +158,30 @@ export default function GamePage() {
               Stage {stage} — {STAGE_NAMES[stage]}
             </motion.span>
           </AnimatePresence>
-          <span>
-            Capacity{' '}
-            <span className={isStage4 ? 'text-neutral-600' : 'text-neutral-400'}>
-              {remainingCapacity}/5
-            </span>
-          </span>
         </div>
       </header>
 
-      {/* Main grid — 3 columns: sidebar | city scene | right panel. Fills remaining height. */}
-      <main className="grid grid-cols-[240px_1fr_320px] flex-1 min-h-0">
+      {/* Body — 2 columns: left sidebar | right main area */}
+      <main className="grid grid-cols-[280px_1fr] flex-1 min-h-0 overflow-hidden">
 
-        {/* Left column: overview + districts + sticky End Turn */}
+        {/* ── Left column: overview + districts + End Turn ── */}
         <aside
           className={`border-r flex flex-col overflow-hidden transition-colors duration-[6000ms] ${
             isStage4 ? 'border-neutral-900' : 'border-neutral-800'
           }`}
         >
-          {/* Scrollable content */}
-          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-6 min-h-0">
+          {/* City Overview — fixed height, no scroll */}
+          <div className={`shrink-0 px-4 pt-4 pb-4 border-b transition-colors duration-[6000ms] ${isStage4 ? 'border-neutral-900' : 'border-neutral-800'}`}>
             <CityOverviewPanel />
+          </div>
+
+          {/* Districts — fills all remaining space */}
+          <div className="flex-1 min-h-0 px-4 py-3 flex flex-col">
             <DistrictPanel />
           </div>
 
-          {/* End Turn — always visible at bottom */}
           {status === 'playing' && (
-            <div className={`shrink-0 px-4 py-3 border-t transition-colors duration-[6000ms] ${isStage4 ? 'border-neutral-900' : 'border-neutral-800'}`}>
+            <div className={`shrink-0 px-3 py-2 border-t transition-colors duration-[6000ms] ${isStage4 ? 'border-neutral-900' : 'border-neutral-800'}`}>
               <button
                 onClick={handleEndTurn}
                 className={`w-full py-2.5 text-xs uppercase tracking-widest border rounded transition-colors duration-200 ${
@@ -190,7 +193,7 @@ export default function GamePage() {
                 End Turn
               </button>
               {selectedPolicyIds.length > 0 && (
-                <p className="text-xs text-neutral-600 text-center mt-2">
+                <p className="text-xs text-neutral-600 text-center mt-1.5">
                   {selectedPolicyIds.length} polic
                   {selectedPolicyIds.length === 1 ? 'y' : 'ies'} selected
                 </p>
@@ -199,36 +202,44 @@ export default function GamePage() {
           )}
         </aside>
 
-        {/* Center column: City Scene */}
-        <section className="p-4 flex flex-col items-center justify-center overflow-hidden">
-          <CityScenePanel />
-        </section>
+        {/* ── Right main area: top = city scene + incidents/feedback, bottom = policies 2×2 ── */}
+        <div className="flex flex-col min-h-0 overflow-hidden">
 
-        {/* Right column: incidents (fixed) + policies (scrollable) + feedback (footer) */}
-        <section
-          className={`border-l flex flex-col overflow-hidden transition-colors duration-[6000ms] ${
-            isStage4 ? 'border-neutral-900' : 'border-neutral-800'
-          }`}
-        >
-          {/* Incidents — fixed, capped height, own scroll */}
-          <div className={`shrink-0 px-4 pt-4 pb-3 border-b max-h-[38%] overflow-y-auto transition-colors duration-[6000ms] ${isStage4 ? 'border-neutral-900' : 'border-neutral-800'}`}>
-            <IncidentPanel />
+          {/* Top row: city scene (flex-1) + incidents/feedback sidebar */}
+          <div
+            className={`flex flex-1 min-h-0 border-b transition-colors duration-[6000ms] ${isStage4 ? 'border-neutral-900' : 'border-neutral-800'}`}
+          >
+            {/* City scene — fills available space */}
+            <section className="flex-1 min-w-0 min-h-0 overflow-hidden">
+              <CityScenePanel />
+            </section>
+
+            {/* Incidents + Feedback sidebar */}
+            <div className={`w-72 shrink-0 border-l flex flex-col overflow-hidden transition-colors duration-[6000ms] ${isStage4 ? 'border-neutral-900' : 'border-neutral-800'}`}>
+              <div className="flex-1 min-h-0 overflow-y-auto px-3 pt-3 pb-2">
+                <IncidentPanel />
+              </div>
+              <div className={`shrink-0 border-t px-3 py-2 max-h-[40%] overflow-y-auto transition-colors duration-[6000ms] ${isStage4 ? 'border-neutral-900' : 'border-neutral-800'}`}>
+                <FeedbackPanel />
+              </div>
+            </div>
           </div>
 
-          {/* Policies — flex-fill, own scroll */}
-          <div className="flex-1 min-h-0 overflow-y-auto px-4 py-3">
+          {/* Bottom row: policies 2×2 grid — shrinks to fit card content exactly */}
+          <div
+            className={`shrink-0 px-4 py-3 border-t transition-colors duration-[6000ms] ${isStage4 ? 'border-neutral-900' : 'border-neutral-800'}`}
+          >
             <PolicyPanel />
           </div>
 
-          {/* Feedback — compact footer, own scroll if needed */}
-          <div className={`shrink-0 px-4 py-3 border-t max-h-[28%] overflow-y-auto transition-colors duration-[6000ms] ${isStage4 ? 'border-neutral-900' : 'border-neutral-800'}`}>
-            <FeedbackPanel />
-          </div>
-        </section>
+        </div>
       </main>
 
       {/* Ending overlay */}
       <EndingScreen />
+
+      {/* Intro overlay — shown on first load */}
+      {!introComplete && <IntroScreen onStart={() => setIntroComplete(true)} />}
     </div>
   )
 }

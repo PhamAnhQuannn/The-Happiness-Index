@@ -50,54 +50,56 @@ export function DistrictPanel() {
   const isStage4 = stage === 4
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col h-full">
       <div
-        className={`text-xs uppercase tracking-widest mb-3 transition-colors duration-[6000ms] ${
+        className={`text-xs uppercase tracking-widest mb-2 shrink-0 transition-colors duration-[6000ms] ${
           isStage4 ? 'text-neutral-700' : 'text-neutral-500'
         }`}
       >
         Districts
       </div>
 
-      {districts.map((district) => {
-        const mood = DISTRICT_STAGE_MOODS[district.id][stage as StageId]
-        const tagColor = CONDITION_TAG_COLOR[district.conditionTag] ?? 'text-neutral-600'
-        return (
-          <div
-            key={district.id}
-            className={`flex items-center justify-between py-1.5 border-b last:border-0 transition-colors duration-[6000ms] ${
-              isStage4 ? 'border-neutral-900' : 'border-neutral-800'
-            }`}
-          >
-            <div className="flex items-center gap-2">
-              {district.hasAlert && (
+      {/* Districts — evenly distributed with consistent padding */}
+      <div className="flex flex-col flex-1 min-h-0 justify-around">
+        {districts.map((district) => {
+          const mood = DISTRICT_STAGE_MOODS[district.id][stage as StageId]
+          const tagColor = CONDITION_TAG_COLOR[district.conditionTag] ?? 'text-neutral-600'
+          return (
+            <div
+              key={district.id}
+              className={`py-2 border-b last:border-0 transition-colors duration-[6000ms] ${
+                isStage4 ? 'border-neutral-900' : 'border-neutral-800/60'
+              }`}
+            >
+            {/* Row 1: alert + name */}
+            <div className="flex items-center gap-1.5">
+              {district.hasAlert ? (
                 <motion.span
                   animate={{ opacity: [1, 0.3, 1] }}
                   transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                  className="text-amber-400 text-xs"
+                  className="text-amber-400 text-xs leading-none"
                 >
                   !
                 </motion.span>
-              )}
-              {!district.hasAlert && (
-                <span className="text-transparent text-xs select-none">!</span>
+              ) : (
+                <span className="text-transparent text-xs select-none leading-none">!</span>
               )}
               <span
-                className={`text-xs capitalize transition-colors duration-[6000ms] ${
+                className={`text-xs font-medium capitalize transition-colors duration-[6000ms] ${
                   isStage4 ? 'text-neutral-500' : 'text-neutral-300'
                 }`}
               >
                 {district.name}
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              {/* Condition tag badge */}
+            {/* Row 2: condition tag + mood + dots */}
+            <div className="flex items-center gap-2 pl-4">
               <motion.span
                 key={district.conditionTag}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6 }}
-                className={`text-xs font-mono lowercase transition-colors duration-500 ${tagColor}`}
+                className={`text-xs font-mono lowercase ${tagColor}`}
               >
                 {district.conditionTag}
               </motion.span>
@@ -112,13 +114,14 @@ export function DistrictPanel() {
               >
                 {mood}
               </motion.span>
-              <span className="flex items-center">
+              <span className="flex items-center ml-auto">
                 {LIVELINESS_DOTS(district.livelinessLevel)}
               </span>
             </div>
-          </div>
-        )
-      })}
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

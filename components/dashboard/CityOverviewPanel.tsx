@@ -42,7 +42,7 @@ export function MetricBar({
   const pct = Math.max(0, Math.min(100, value))
 
   return (
-    <div className="mb-3">
+    <div className="mb-2.5">
       <div className="flex justify-between text-xs mb-1">
         <span
           className={`uppercase tracking-widest transition-colors duration-[6000ms] ${
@@ -120,11 +120,7 @@ function ComplianceBar({ value }: { value: number }) {
 
 export function CityOverviewPanel() {
   const metrics = useGameStore((s) => s.metrics)
-  const turn = useGameStore((s) => s.turn)
-  const maxTurns = useGameStore((s) => s.maxTurns)
   const stage = useGameStore((s) => s.stage)
-  const remainingCapacity = useGameStore((s) => s.remainingCapacity)
-  const governanceCapacity = useGameStore((s) => s.governanceCapacity)
   const controlPressure = useGameStore((s) => s.controlPressure)
   const compliance = useGameStore((s) => s.compliance)
   const isStage4 = stage === 4
@@ -137,9 +133,9 @@ export function CityOverviewPanel() {
   }
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-0">
       <div
-        className={`text-xs uppercase tracking-widest mb-3 transition-colors duration-[6000ms] ${
+        className={`text-xs uppercase tracking-widest mb-2 transition-colors duration-[6000ms] ${
           isStage4 ? 'text-neutral-700' : 'text-neutral-500'
         }`}
       >
@@ -147,38 +143,11 @@ export function CityOverviewPanel() {
       </div>
 
       <div
-        className={`flex justify-between text-xs mb-4 transition-colors duration-[6000ms] ${
-          isStage4 ? 'text-neutral-700' : 'text-neutral-500'
+        className={`text-xs mb-2 transition-colors duration-[6000ms] ${
+          isStage4 ? 'text-neutral-700' : 'text-neutral-400'
         }`}
       >
-        <span>
-          Turn{' '}
-          <span
-            className={`transition-colors duration-[6000ms] ${
-              isStage4 ? 'text-neutral-500' : 'text-neutral-200'
-            }`}
-          >
-            {turn}
-          </span>
-          /{maxTurns}
-        </span>
-        <span
-          className={`transition-colors duration-[6000ms] ${
-            isStage4 ? 'text-neutral-700' : 'text-neutral-400'
-          }`}
-        >
-          {STAGE_NAMES[stage]}
-        </span>
-        <span>
-          Cap{' '}
-          <span
-            className={`transition-colors duration-[6000ms] ${
-              isStage4 ? 'text-neutral-500' : 'text-neutral-200'
-            }`}
-          >
-            {remainingCapacity}/{governanceCapacity}
-          </span>
-        </span>
+        {STAGE_NAMES[stage]}
       </div>
 
       {(Object.keys(metrics) as MetricKey[]).map((key) => (
@@ -189,7 +158,7 @@ export function CityOverviewPanel() {
       <div className={`mt-3 pt-3 border-t transition-colors duration-[6000ms] ${isStage4 ? 'border-neutral-900' : 'border-neutral-800'}`}>
         {/* Control Pressure */}
         <div className="mb-2.5">
-          <div className="flex justify-between text-xs mb-1.5">
+          <div className="flex justify-between text-xs mb-1">
             <span className={`uppercase tracking-widest transition-colors duration-[6000ms] ${isStage4 ? 'text-neutral-700' : 'text-neutral-500'}`}>
               Control Pressure
             </span>
@@ -210,7 +179,7 @@ export function CityOverviewPanel() {
 
         {/* Compliance */}
         <div>
-          <div className="flex justify-between text-xs mb-1.5">
+          <div className="flex justify-between text-xs mb-1">
             <span className={`uppercase tracking-widest transition-colors duration-[6000ms] ${isStage4 ? 'text-neutral-700' : 'text-neutral-500'}`}>
               Compliance
             </span>

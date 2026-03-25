@@ -94,7 +94,7 @@ function buildInitialState(): GameState {
 function buildSeededInitialState(): GameState {
   const base = buildInitialState()
   base.policyHandIds = drawPolicyHand(1, [])
-  const pool = getIncidentsAvailableAtTurn(1, [])
+  const pool = getIncidentsAvailableAtTurn(1)
   const picked = weightedPick(pool, 2)
   base.activeIncidents = picked.map((inc) => ({
     incidentId: inc.id,
