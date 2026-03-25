@@ -9,11 +9,13 @@ import { deriveVisualConfig } from '@/lib/visualMapping'
 import { CentralCommons } from '@/components/city/CentralCommons'
 import { IncidentOverlay } from '@/components/city/IncidentOverlay'
 import { DistrictTile } from '@/components/city/DistrictTile'
+import { PeopleLayer } from '@/components/city/PeopleLayer'
 import type { DistrictId, StageId, District } from '@/types'
 
 /* ─────────────────────────────────────────────
    Stage → City Image mapping
    Stage 1 (Managed Normalcy)   = Vibrant city, peak happiness
+   Stage 1b                     = Same stage, used on turn 1 before any player actions
    Stage 2 (Regulated Order)    = Slightly muted, still good
    Stage 3 (Efficient Silence)  = Dystopian with first cracks
    Stage 4 (Quiet Utopia)       = Full dystopia, grey & controlled
@@ -25,6 +27,8 @@ const STAGE_IMAGES: Record<StageId, string> = {
   3: '/city/stage-3-efficient-silence.png',
   4: '/city/stage-4-quiet-utopia.png',
 }
+// Fresh-start image — used on turn 1 only, before the player has touched anything
+const STAGE_1B_IMAGE = '/city/stage-1b-managed-normalcy.png'
 
 /* ─────────────────────────────────────────────
    District hotspot zones — positioned over the
@@ -303,6 +307,7 @@ function DistrictHotspotOverlay({
 
 export function CityScenePanel() {
   const stage = useGameStore((s) => s.stage)
+  const turn  = useGameStore((s) => s.turn)
   const districts = useGameStore((s) => s.districts)
   // Derive the full visual config from the entire game state
   const gameState = useGameStore((s) => s)
@@ -319,14 +324,17 @@ export function CityScenePanel() {
   // Grid opacity now comes from VisualConfig (moved out of inline logic)
   const surveillanceOpacity = visual.atmosphere.gridOpacity * 0.35
 
+  // Stage 1b: use the fresh-start image on the very first turn (before any actions)
+  const stage1Image = turn === 1 ? STAGE_1B_IMAGE : STAGE_IMAGES[1]
+
   return (
     <div className="relative w-full aspect-[10/7] rounded-lg overflow-hidden bg-[#0a0a10] border border-neutral-800/40 shadow-2xl">
 
       {/* ── Stage images with crossfade ── */}
       {([1, 2, 3, 4] as StageId[]).map((s) => (
         <img
-          key={s}
-          src={STAGE_IMAGES[s]}
+          key={s === 1 ? `1-${turn === 1 ? 'b' : 'a'}` : s}
+          src={s === 1 ? stage1Image : STAGE_IMAGES[s]}
           alt={`City at stage ${s}`}
           draggable={false}
           className="absolute inset-0 w-full h-full object-fill select-none"
@@ -365,6 +373,11 @@ export function CityScenePanel() {
         style={{ top: '24%', left: '26%', width: '48%', height: '30%' }}
       >
         <CentralCommons visual={visual} />
+      </div>
+
+      {/* ── People freedom layer — scattered across commons + residential — z-14 ── */}
+      <div className="absolute inset-0 z-[14] pointer-events-none">
+        <PeopleLayer visual={visual} />
       </div>
 
       {/* ── Incident alert overlays on district zones — z-13 ── */}
