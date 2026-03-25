@@ -91,20 +91,6 @@ export function FeedbackPanel() {
                 ))}
               </div>
             )}
-
-            {/* Resolved incidents */}
-            {feedback.incidentsResolved.length > 0 && (
-              <p className="text-xs text-emerald-600 mt-1.5">
-                Resolved: {feedback.incidentsResolved.join(', ')}
-              </p>
-            )}
-
-            {/* Escalated incidents */}
-            {feedback.incidentsEscalated.length > 0 && (
-              <p className="text-xs text-red-600 mt-1.5">
-                Escalated: {feedback.incidentsEscalated.join(', ')}
-              </p>
-            )}
           </motion.div>
         ) : (
           <motion.p
