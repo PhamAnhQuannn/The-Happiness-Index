@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 24" width="48" height="24">
+  <!-- Crowd group — 3 figures close together, Stage 1 liveliness -->
+  <!-- Person 1 (left, orange) -->
+  <circle cx="9" cy="6" r="3.5" fill="#f5c09a"/>
+  <polygon points="6,9 12,9 12,17 6,17" fill="#ff7744"/>
+  <line x1="6" y1="10" x2="3" y2="14" stroke="#ff7744" stroke-width="2"/>
+  <line x1="12" y1="10" x2="14" y2="14" stroke="#ff7744" stroke-width="2"/>
+  <line x1="8" y1="17" x2="7" y2="22" stroke="#334455" stroke-width="2"/>
+  <line x1="10" y1="17" x2="11" y2="22" stroke="#334455" stroke-width="2"/>
+  <!-- Person 2 (center, taller, blue) -->
+  <circle cx="22" cy="4" r="4" fill="#e8b070"/>
+  <polygon points="18,8 26,8 26,18 18,18" fill="#4477cc"/>
+  <line x1="18" y1="10" x2="15" y2="15" stroke="#4477cc" stroke-width="2.2"/>
+  <line x1="26" y1="10" x2="29" y2="13" stroke="#4477cc" stroke-width="2.2"/>
+  <line x1="20" y1="18" x2="19" y2="24" stroke="#223344" stroke-width="2.2"/>
+  <line x1="24" y1="18" x2="25" y2="24" stroke="#223344" stroke-width="2.2"/>
+  <!-- Person 3 (right, green) -->
+  <circle cx="36" cy="6" r="3.5" fill="#f5c09a"/>
+  <polygon points="33,9 39,9 39,17 33,17" fill="#44aa66"/>
+  <line x1="33" y1="10" x2="30" y2="13" stroke="#44aa66" stroke-width="2"/>
+  <line x1="39" y1="10" x2="42" y2="14" stroke="#44aa66" stroke-width="2"/>
+  <line x1="35" y1="17" x2="34" y2="22" stroke="#334455" stroke-width="2"/>
+  <line x1="37" y1="17" x2="38" y2="22" stroke="#334455" stroke-width="2"/>
+  <!-- Speech bubble between 1 and 2 (conversation) -->
+  <ellipse cx="16" cy="3" rx="4" ry="2" fill="white" opacity="0.7"/>
+  <polygon points="14,5 16,5 15,7" fill="white" opacity="0.7"/>
+  <line x1="13" y1="3" x2="19" y2="3" stroke="#888888" stroke-width="0.6"/>
+</svg>

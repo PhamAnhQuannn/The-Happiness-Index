@@ -105,7 +105,7 @@ export function PolicyPanel() {
 
   return (
     <div className="flex flex-col gap-1">
-      <div className="text-xs text-neutral-500 uppercase tracking-widest mb-3">
+      <div className="text-xs text-neutral-500 uppercase tracking-widest mb-3 sticky top-0 bg-neutral-950 pb-1">
         Policies
       </div>
 

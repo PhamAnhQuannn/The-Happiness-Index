@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 32" width="64" height="32">
+  <!-- Road surface top face (isometric) -->
+  <polygon points="0,16 32,0 64,16 32,32" fill="#555566"/>
+  <!-- Road markings -->
+  <polygon points="14,16 18,14 50,14 46,16 50,18 18,18" fill="#888899" opacity="0.3"/>
+  <!-- Center dashes -->
+  <polygon points="20,16 24,14 28,14 24,16 28,18 24,18" fill="#ffffaa" opacity="0.6"/>
+  <polygon points="36,16 40,14 44,14 40,16 44,18 40,18" fill="#ffffaa" opacity="0.6"/>
+  <!-- Side curb left -->
+  <polygon points="0,16 6,13 38,13 32,16" fill="#777788"/>
+  <!-- Side curb right -->
+  <polygon points="32,16 58,13 64,16 38,19" fill="#666677"/>
+</svg>

@@ -3,7 +3,30 @@
 import { motion } from 'framer-motion'
 import { useGameStore } from '@/store/gameStore'
 import { DISTRICT_STAGE_MOODS } from '@/data/districts'
-import type { StageId } from '@/types'
+import type { DistrictConditionTag, StageId } from '@/types'
+
+// Tag colour tiers — hollow/collapsed/strained = bad; stable tier = neutral
+const CONDITION_TAG_COLOR: Record<DistrictConditionTag, string> = {
+  // collapsed tier
+  hollow: 'text-red-600',
+  vacant: 'text-red-600',
+  // strained tier
+  strained: 'text-amber-500',
+  backlogged: 'text-amber-500',
+  brittle: 'text-amber-500',
+  thinned: 'text-amber-500',
+  // control-inflected tier (stable but under pressure)
+  orderly: 'text-blue-500',
+  frictionless: 'text-blue-400',
+  standardized: 'text-blue-400',
+  // healthy stable tier
+  managed: 'text-neutral-500',
+  optimized: 'text-neutral-500',
+  hopeful: 'text-neutral-500',
+  alive: 'text-neutral-500',
+  active: 'text-neutral-500',
+  stagnant: 'text-neutral-600',
+}
 
 const LIVELINESS_DOTS = (level: number) =>
   Array.from({ length: 5 }, (_, i) => (
@@ -38,6 +61,7 @@ export function DistrictPanel() {
 
       {districts.map((district) => {
         const mood = DISTRICT_STAGE_MOODS[district.id][stage as StageId]
+        const tagColor = CONDITION_TAG_COLOR[district.conditionTag] ?? 'text-neutral-600'
         return (
           <div
             key={district.id}
@@ -67,6 +91,16 @@ export function DistrictPanel() {
               </span>
             </div>
             <div className="flex items-center gap-2">
+              {/* Condition tag badge */}
+              <motion.span
+                key={district.conditionTag}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6 }}
+                className={`text-xs font-mono lowercase transition-colors duration-500 ${tagColor}`}
+              >
+                {district.conditionTag}
+              </motion.span>
               <motion.span
                 key={mood}
                 initial={{ opacity: 0 }}

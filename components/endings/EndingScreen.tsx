@@ -2,6 +2,28 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGameStore } from '@/store/gameStore'
+import type { EndingProfile } from '@/types'
+
+const PROFILE_LABELS: Record<EndingProfile, string> = {
+  'utopia-achieved': 'Utopia Achieved',
+  'quiet-utopia': 'Quiet Utopia',
+  'sterile-stability': 'Sterile Stability',
+  'managed-survival': 'Managed Survival',
+}
+
+const PROFILE_COLORS: Record<EndingProfile, string> = {
+  'utopia-achieved': 'text-emerald-500',
+  'quiet-utopia': 'text-neutral-600',
+  'sterile-stability': 'text-blue-500',
+  'managed-survival': 'text-amber-600',
+}
+
+const PROFILE_SUBTEXT: Record<EndingProfile, string> = {
+  'utopia-achieved': 'All dimensions flourishing.',
+  'quiet-utopia': 'Order achieved. Humanity costs unknown.',
+  'sterile-stability': 'Freedom and creativity have been optimised away.',
+  'managed-survival': 'Functional. But at what threshold?',
+}
 
 export function EndingScreen() {
   const ending = useGameStore((s) => s.ending)
@@ -10,6 +32,7 @@ export function EndingScreen() {
   const isWin =
     ending?.status === 'won-utopia' || ending?.status === 'won-quiet-utopia'
   const isQuietUtopia = ending?.status === 'won-quiet-utopia'
+  const profile = ending?.profile
 
   return (
     <AnimatePresence>
@@ -53,7 +76,7 @@ export function EndingScreen() {
 
             {/* Title */}
             <h2
-              className={`text-xl font-light mb-4 ${
+              className={`text-xl font-light mb-2 ${
                 isQuietUtopia
                   ? 'text-neutral-500'
                   : isWin
@@ -63,6 +86,25 @@ export function EndingScreen() {
             >
               {ending.title}
             </h2>
+
+            {/* Profile badge — only on wins */}
+            {isWin && profile && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.2, delay: isQuietUtopia ? 2 : 0.4 }}
+                className="mb-4"
+              >
+                <span
+                  className={`text-xs font-mono uppercase tracking-widest ${PROFILE_COLORS[profile]}`}
+                >
+                  {PROFILE_LABELS[profile]}
+                </span>
+                <p className={`text-xs mt-0.5 ${isQuietUtopia ? 'text-neutral-700' : 'text-neutral-600'}`}>
+                  {PROFILE_SUBTEXT[profile]}
+                </p>
+              </motion.div>
+            )}
 
             {/* Message — Quiet Utopia gets extra sparse treatment */}
             <p

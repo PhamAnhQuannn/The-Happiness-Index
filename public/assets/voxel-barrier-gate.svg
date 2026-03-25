@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 40" width="48" height="40">
+  <!-- Checkpoint barrier gate — red/white striped arm -->
+  <!-- Base block left -->
+  <polygon points="4,24 14,18 14,30 4,36" fill="#cc3333"/>
+  <polygon points="4,24 4,36 10,39 10,27" fill="#aa2222"/>
+  <polygon points="10,27 14,25 14,33 10,35" fill="#882222"/>
+  <!-- Post -->
+  <polygon points="8,10 12,8 12,24 8,26" fill="#dddddd"/>
+  <polygon points="8,10 8,26 10,27 10,11" fill="#bbbbbb"/>
+  <polygon points="10,11 12,9 12,25 10,27" fill="#999999"/>
+  <!-- Barrier arm (horizontal, striped) -->
+  <polygon points="12,14 46,14 46,18 12,18" fill="#eeeeee"/>
+  <!-- Red stripes on arm -->
+  <polygon points="14,14 18,14 18,18 14,18" fill="#ee3333"/>
+  <polygon points="22,14 26,14 26,18 22,18" fill="#ee3333"/>
+  <polygon points="30,14 34,14 34,18 30,18" fill="#ee3333"/>
+  <polygon points="38,14 42,14 42,18 38,18" fill="#ee3333"/>
+  <!-- Warning light on top of post -->
+  <circle cx="10" cy="8" r="3" fill="#ff4400" opacity="0.9"/>
+  <circle cx="10" cy="8" r="2" fill="#ffaa00" opacity="0.7"/>
+</svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 56" width="24" height="56">
+  <!-- Smokestack isometric pillar -->
+  <!-- Top face -->
+  <polygon points="4,14 12,10 20,14 12,18" fill="#998877"/>
+  <!-- Left face -->
+  <polygon points="4,14 4,50 12,54 12,18" fill="#887766"/>
+  <!-- Right face -->
+  <polygon points="12,18 20,14 20,50 12,54" fill="#776655"/>
+  <!-- Red warning stripe left -->
+  <polygon points="4,28 4,33 12,37 12,32" fill="#cc4444" opacity="0.85"/>
+  <!-- Red warning stripe right -->
+  <polygon points="12,32 20,28 20,33 12,37" fill="#aa3333" opacity="0.85"/>
+  <!-- Red stripe 2 left -->
+  <polygon points="4,40 4,45 12,49 12,44" fill="#cc4444" opacity="0.85"/>
+  <!-- Red stripe 2 right -->
+  <polygon points="12,44 20,40 20,45 12,49" fill="#aa3333" opacity="0.85"/>
+  <!-- Smoke puffs -->
+  <circle cx="12" cy="8" r="4" fill="#cccccc" opacity="0.75"/>
+  <circle cx="14" cy="3" r="3" fill="#bbbbbb" opacity="0.6"/>
+  <circle cx="10" cy="0" r="2" fill="#aaaaaa" opacity="0.5"/>
+</svg>

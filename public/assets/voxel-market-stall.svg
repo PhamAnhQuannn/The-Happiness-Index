@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 64" width="48" height="64">
+  <!-- Market stall — canopy top + counter -->
+  <!-- Canopy top face -->
+  <polygon points="4,16 24,6 44,16 24,26" fill="#e85533"/>
+  <!-- Canopy stripe detail -->
+  <polygon points="4,16 10,13 10,19 4,22" fill="#cc3322"/>
+  <polygon points="16,10 22,7 22,13 16,16" fill="#cc3322"/>
+  <polygon points="28,10 34,7 34,13 28,16" fill="#cc3322"/>
+  <polygon points="38,13 44,10 44,16 38,19" fill="#cc3322"/>
+  <!-- Canopy front drape left -->
+  <polygon points="4,22 4,28 24,38 24,32" fill="#dd4422" opacity="0.9"/>
+  <!-- Canopy front drape right -->
+  <polygon points="24,32 44,22 44,28 24,38" fill="#bb3311" opacity="0.9"/>
+  <!-- Counter top -->
+  <polygon points="8,38 24,30 40,38 24,46" fill="#d4a96a"/>
+  <!-- Counter left -->
+  <polygon points="8,38 8,52 24,60 24,46" fill="#b8844a"/>
+  <!-- Counter right -->
+  <polygon points="24,46 40,38 40,52 24,60" fill="#9a6a38"/>
+  <!-- Goods on counter -->
+  <circle cx="16" cy="38" r="3" fill="#ff6644" opacity="0.9"/>
+  <circle cx="22" cy="36" r="2.5" fill="#ffaa22" opacity="0.9"/>
+  <circle cx="28" cy="38" r="3" fill="#44cc66" opacity="0.9"/>
+  <circle cx="34" cy="36" r="2" fill="#ff4488" opacity="0.9"/>
+</svg>

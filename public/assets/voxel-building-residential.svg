@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 80" width="64" height="80">
+  <!-- Top face (roof) -->
+  <polygon points="8,28 32,14 56,28 32,42" fill="#b8c4a0"/>
+  <!-- Left face -->
+  <polygon points="8,28 8,62 32,76 32,42" fill="#8a9e72"/>
+  <!-- Right face -->
+  <polygon points="32,42 56,28 56,62 32,76" fill="#6a7e52"/>
+  <!-- Left wall windows row 1 -->
+  <polygon points="12,34 18,30 18,40 12,44" fill="#aaccee" opacity="0.8"/>
+  <polygon points="20,30 26,26 26,36 20,40" fill="#aaccee" opacity="0.8"/>
+  <!-- Left wall windows row 2 -->
+  <polygon points="12,46 18,42 18,52 12,56" fill="#aaccee" opacity="0.8"/>
+  <polygon points="20,42 26,38 26,48 20,52" fill="#aaccee" opacity="0.8"/>
+  <!-- Right wall windows row 1 -->
+  <polygon points="38,38 44,34 44,44 38,48" fill="#88aacc" opacity="0.7"/>
+  <polygon points="46,34 52,30 52,40 46,44" fill="#88aacc" opacity="0.7"/>
+  <!-- Right wall windows row 2 -->
+  <polygon points="38,50 44,46 44,56 38,60" fill="#88aacc" opacity="0.7"/>
+  <polygon points="46,46 52,42 52,52 46,56" fill="#88aacc" opacity="0.7"/>
+  <!-- Left door -->
+  <polygon points="26,48 32,44 32,58 26,62" fill="#5a4a3a"/>
+  <!-- Chimney top -->
+  <polygon points="24,10 28,8 34,11 30,13" fill="#998877"/>
+  <polygon points="24,10 24,14 28,16 28,12" fill="#887766"/>
+  <polygon points="28,12 34,9 34,13 28,16" fill="#776655"/>
+</svg>

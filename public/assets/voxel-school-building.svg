@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 72" width="64" height="72">
+  <!-- Wide low school building -->
+  <!-- Top face -->
+  <polygon points="4,24 32,10 60,24 32,38" fill="#c8d8e8"/>
+  <!-- Left face -->
+  <polygon points="4,24 4,56 32,70 32,38" fill="#a0b4c8"/>
+  <!-- Right face -->
+  <polygon points="32,38 60,24 60,56 32,70" fill="#7a9ab0"/>
+  <!-- Left face windows (courtyard style, big) -->
+  <polygon points="7,30 16,25 16,38 7,43" fill="#ddeeff" opacity="0.85"/>
+  <line x1="11.5" y1="25" x2="11.5" y2="38" stroke="#aabbcc" stroke-width="0.8"/>
+  <line x1="7" y1="31" x2="16" y2="27" stroke="#aabbcc" stroke-width="0.8"/>
+  <polygon points="18,28 27,23 27,36 18,41" fill="#ddeeff" opacity="0.85"/>
+  <line x1="22.5" y1="23" x2="22.5" y2="36" stroke="#aabbcc" stroke-width="0.8"/>
+  <!-- Left door -->
+  <polygon points="24,44 30,41 30,54 24,57" fill="#6688aa"/>
+  <!-- Right face windows -->
+  <polygon points="36,42 44,36 44,49 36,55" fill="#bbccdd" opacity="0.8"/>
+  <line x1="40" y1="36" x2="40" y2="49" stroke="#8899aa" stroke-width="0.8"/>
+  <polygon points="46,38 54,32 54,44 46,50" fill="#bbccdd" opacity="0.8"/>
+  <!-- Mural on left wall (colorful stripe — Stage 1 vitality) -->
+  <polygon points="7,44 14,40 14,48 7,52" fill="#ff8844" opacity="0.7"/>
+  <polygon points="14,41 18,39 18,47 14,49" fill="#44cc88" opacity="0.7"/>
+  <polygon points="18,39 22,37 22,45 18,47" fill="#4488ff" opacity="0.7"/>
+</svg>

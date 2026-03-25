@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 32" width="64" height="32">
+  <!-- Road surface -->
+  <polygon points="0,16 32,0 64,16 32,32" fill="#555566"/>
+  <!-- Vertical road markings (perpendicular) -->
+  <polygon points="28,6 36,2 36,28 28,30" fill="#666677" opacity="0.4"/>
+  <!-- Center dashes vertical -->
+  <polygon points="30,8 34,6 34,12 30,14" fill="#ffffaa" opacity="0.6"/>
+  <polygon points="30,20 34,18 34,24 30,26" fill="#ffffaa" opacity="0.6"/>
+  <!-- Front curb -->
+  <polygon points="0,16 6,19 38,19 32,16" fill="#444455"/>
+  <!-- Back curb -->
+  <polygon points="32,16 58,19 64,16 38,13" fill="#444455"/>
+</svg>

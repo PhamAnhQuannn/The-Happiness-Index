@@ -38,6 +38,12 @@ export type GameStatus =
   | 'won-quiet-utopia'  // metrics hit thresholds but Social Vitality ≤ 20
   | 'lost'
 
+export type EndingProfile =
+  | 'utopia-achieved'
+  | 'quiet-utopia'
+  | 'sterile-stability'
+  | 'managed-survival'
+
 export type LossReason =
   | 'trust-collapse'
   | 'stress-crisis'
@@ -62,6 +68,13 @@ export type HiddenValueSet = {
   socialVitality: number  // primary decay driver
 }
 
+export type DistrictConditionTag =
+  | 'managed' | 'strained' | 'hollow'
+  | 'optimized' | 'backlogged' | 'brittle'
+  | 'hopeful' | 'standardized' | 'stagnant'
+  | 'alive' | 'thinned' | 'vacant'
+  | 'active' | 'orderly' | 'frictionless'
+
 // ── District ─────────────────────────────────
 
 export type District = {
@@ -70,6 +83,7 @@ export type District = {
   theme: string
   currentMoodLabel: string
   livelinessLevel: 0 | 1 | 2 | 3 | 4 | 5
+  conditionTag: DistrictConditionTag
   hasAlert: boolean
   policySensitivityNotes?: string[]
 }
@@ -174,6 +188,7 @@ export type PendingEffect = {
 
 export type EndingRecord = {
   status: GameStatus
+  profile?: EndingProfile
   lossReason: LossReason
   finalTurn: number
   finalMetrics: MetricSet
@@ -204,6 +219,8 @@ export type GameState = {
   // capacity
   governanceCapacity: number   // always 5 in MVP
   remainingCapacity: number    // resets to 5 at start of each turn
+  controlPressure: number
+  compliance: number
 
   // metrics
   metrics: MetricSet

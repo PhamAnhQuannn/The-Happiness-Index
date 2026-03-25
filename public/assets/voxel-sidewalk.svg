@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 32" width="64" height="32">
+  <!-- Sidewalk top (lighter than road) -->
+  <polygon points="0,16 32,0 64,16 32,32" fill="#998877"/>
+  <!-- Paving tile lines horizontal -->
+  <polygon points="0,16 32,0 36,2 4,18" fill="#887766" opacity="0.5"/>
+  <polygon points="8,20 40,4 44,6 12,22" fill="#887766" opacity="0.5"/>
+  <!-- Paving tile lines vertical -->
+  <polygon points="16,8 20,6 52,22 48,24" fill="#887766" opacity="0.5"/>
+  <polygon points="28,2 32,0 64,16 60,18" fill="#887766" opacity="0.5"/>
+</svg>

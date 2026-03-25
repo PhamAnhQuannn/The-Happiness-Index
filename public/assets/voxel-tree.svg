@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 48" width="32" height="48">
+  <!-- Lush tree — Stage 1 voxel isometric -->
+  <!-- Tree shadow -->
+  <ellipse cx="16" cy="44" rx="8" ry="3" fill="#00000018"/>
+  <!-- Trunk left -->
+  <polygon points="13,36 16,34 16,44 13,46" fill="#8B5E3C"/>
+  <!-- Trunk right -->
+  <polygon points="16,34 19,36 19,46 16,44" fill="#6B4E2C"/>
+  <!-- Trunk top -->
+  <polygon points="13,36 16,34 19,36 16,38" fill="#9B6E4C"/>
+  <!-- Foliage — round layered voxel blobs -->
+  <!-- Bottom layer -->
+  <polygon points="6,28 16,22 26,28 16,34" fill="#44aa44"/>
+  <polygon points="6,28 6,32 16,38 16,34" fill="#338833"/>
+  <polygon points="16,34 26,28 26,32 16,38" fill="#226622"/>
+  <!-- Mid layer -->
+  <polygon points="8,20 16,15 24,20 16,25" fill="#55bb44"/>
+  <polygon points="8,20 8,24 16,29 16,25" fill="#44aa33"/>
+  <polygon points="16,25 24,20 24,24 16,29" fill="#339922"/>
+  <!-- Top layer -->
+  <polygon points="11,14 16,11 21,14 16,17" fill="#66cc55"/>
+  <polygon points="11,14 11,17 16,20 16,17" fill="#55bb44"/>
+  <polygon points="16,17 21,14 21,17 16,20" fill="#44aa33"/>
+</svg>

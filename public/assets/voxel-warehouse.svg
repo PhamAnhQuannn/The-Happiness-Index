@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 90" width="72" height="90">
+  <!-- Wide warehouse — isometric voxel -->
+  <!-- Top face -->
+  <polygon points="4,32 36,14 68,32 36,50" fill="#9aabba"/>
+  <!-- Left face -->
+  <polygon points="4,32 4,68 36,86 36,50" fill="#7a8a9a"/>
+  <!-- Right face -->
+  <polygon points="36,50 68,32 68,68 36,86" fill="#5a6a7a"/>
+  <!-- Roof ridge line -->
+  <line x1="36" y1="14" x2="36" y2="50" stroke="#8899aa" stroke-width="1"/>
+  <!-- Left face loading door -->
+  <polygon points="8,48 20,42 20,70 8,76" fill="#2a3a4a"/>
+  <polygon points="9,49 19,43 19,69 9,75" fill="#1a2a3a"/>
+  <!-- Door panel lines -->
+  <line x1="14" y1="43" x2="14" y2="69" stroke="#2a3a4a" stroke-width="1"/>
+  <line x1="9" y1="56" x2="19" y2="50" stroke="#2a3a4a" stroke-width="1"/>
+  <!-- Left small window -->
+  <polygon points="22,40 28,36 28,44 22,48" fill="#aaccee" opacity="0.8"/>
+  <!-- Right face windows -->
+  <polygon points="42,54 50,48 50,58 42,64" fill="#88aacc" opacity="0.7"/>
+  <polygon points="52,48 60,42 60,52 52,58" fill="#88aacc" opacity="0.7"/>
+  <!-- Right face large door -->
+  <polygon points="38,66 52,58 52,80 38,86" fill="#2a3a4a"/>
+  <polygon points="39,67 51,59 51,79 39,85" fill="#1a2a3a"/>
+  <line x1="45" y1="59" x2="45" y2="79" stroke="#2a3a4a" stroke-width="1"/>
+</svg>

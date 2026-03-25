@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 56" width="32" height="56">
+  <!-- Active fountain — isometric voxel -->
+  <!-- Basin top face -->
+  <polygon points="4,32 16,24 28,32 16,40" fill="#88aacc"/>
+  <!-- Basin left -->
+  <polygon points="4,32 4,40 16,48 16,40" fill="#6688aa"/>
+  <!-- Basin right -->
+  <polygon points="16,40 28,32 28,40 16,48" fill="#446688"/>
+  <!-- Inner water -->
+  <polygon points="7,32 16,27 25,32 16,37" fill="#aaccee" opacity="0.9"/>
+  <!-- Center pillar -->
+  <polygon points="13,20 16,18 19,20 16,22" fill="#aabbcc"/>
+  <polygon points="13,20 13,32 16,34 16,22" fill="#8899aa"/>
+  <polygon points="16,22 19,20 19,32 16,34" fill="#667788"/>
+  <!-- Water jets spraying up -->
+  <path d="M16,18 Q14,10 12,6" stroke="#88ccff" stroke-width="1.5" fill="none" opacity="0.8"/>
+  <path d="M16,18 Q18,10 20,6" stroke="#88ccff" stroke-width="1.5" fill="none" opacity="0.8"/>
+  <path d="M16,18 Q13,12 10,12" stroke="#88ccff" stroke-width="1.2" fill="none" opacity="0.6"/>
+  <path d="M16,18 Q19,12 22,12" stroke="#88ccff" stroke-width="1.2" fill="none" opacity="0.6"/>
+  <!-- Water droplet tips -->
+  <circle cx="12" cy="5" r="1.5" fill="#88ccff" opacity="0.7"/>
+  <circle cx="20" cy="5" r="1.5" fill="#88ccff" opacity="0.7"/>
+  <circle cx="10" cy="12" r="1" fill="#88ccff" opacity="0.6"/>
+  <circle cx="22" cy="12" r="1" fill="#88ccff" opacity="0.6"/>
+  <!-- Splash ripple on water -->
+  <ellipse cx="16" cy="32" rx="6" ry="2" stroke="#aaddff" stroke-width="0.8" fill="none" opacity="0.6"/>
+</svg>

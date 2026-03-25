@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 32" width="20" height="32">
+  <!-- Worker — uniform, purposeful, Stage 2-3 -->
+  <!-- Hard hat -->
+  <ellipse cx="10" cy="4" rx="7" ry="3" fill="#ffcc00"/>
+  <rect x="4" y="3" width="12" height="3" fill="#ffcc00"/>
+  <!-- Head -->
+  <circle cx="10" cy="8" r="4" fill="#e8b880"/>
+  <!-- Body in hi-vis jacket -->
+  <polygon points="6,12 14,12 15,22 5,22" fill="#ff6600"/>
+  <!-- Hi-vis stripes -->
+  <line x1="5" y1="16" x2="15" y2="16" stroke="#ffff00" stroke-width="1.5" opacity="0.9"/>
+  <line x1="5" y1="19" x2="15" y2="19" stroke="#ffff00" stroke-width="1.5" opacity="0.9"/>
+  <!-- Arms straight down (working pose) -->
+  <line x1="6" y1="13" x2="3" y2="21" stroke="#ff6600" stroke-width="2.5"/>
+  <line x1="14" y1="13" x2="17" y2="21" stroke="#ff6600" stroke-width="2.5"/>
+  <!-- Legs -->
+  <line x1="8" y1="22" x2="7" y2="30" stroke="#333355" stroke-width="2.5"/>
+  <line x1="12" y1="22" x2="13" y2="30" stroke="#333355" stroke-width="2.5"/>
+  <!-- Boots -->
+  <line x1="5" y1="30" x2="9" y2="30" stroke="#222222" stroke-width="2.5"/>
+  <line x1="11" y1="30" x2="15" y2="30" stroke="#222222" stroke-width="2.5"/>
+</svg>

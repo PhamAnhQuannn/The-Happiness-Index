@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 90" width="80" height="90">
+  <!-- Cultural building — colorful, lively -->
+  <!-- Top face -->
+  <polygon points="8,30 40,12 72,30 40,48" fill="#e8c060"/>
+  <!-- Left face (big mural wall) -->
+  <polygon points="8,30 8,70 40,88 40,48" fill="#e06040"/>
+  <!-- Right face -->
+  <polygon points="40,48 72,30 72,70 40,88" fill="#b84830"/>
+  <!-- Mural on left face — abstract colorful blocks -->
+  <polygon points="10,38 18,33 18,44 10,49" fill="#44ddff" opacity="0.8"/>
+  <polygon points="18,34 24,30 24,41 18,45" fill="#ffcc22" opacity="0.8"/>
+  <polygon points="24,30 30,27 30,38 24,41" fill="#ff4499" opacity="0.8"/>
+  <polygon points="10,50 18,45 18,56 10,61" fill="#44ff88" opacity="0.8"/>
+  <polygon points="18,46 24,42 24,53 18,57" fill="#ff8844" opacity="0.8"/>
+  <polygon points="24,42 30,39 30,50 24,53" fill="#aa44ff" opacity="0.8"/>
+  <!-- Arch entrance right face -->
+  <polygon points="44,58 54,52 54,72 44,78" fill="#7a2010"/>
+  <polygon points="45,59 53,53 53,71 45,77" fill="#4a1008"/>
+  <!-- Arch curve top -->
+  <ellipse cx="49" cy="53" rx="4" ry="5" fill="#7a2010"/>
+  <!-- Right windows -->
+  <polygon points="56,42 63,37 63,48 56,53" fill="#ffeeaa" opacity="0.7"/>
+  <polygon points="64,38 70,33 70,44 64,49" fill="#ffeeaa" opacity="0.7"/>
+  <!-- Stage platform in front -->
+  <polygon points="20,80 40,70 60,80 40,90" fill="#d4a96a"/>
+  <polygon points="20,80 20,86 40,96 40,90" fill="#b8844a"/>
+  <polygon points="40,90 60,80 60,86 40,96" fill="#9a6a38"/>
+</svg>

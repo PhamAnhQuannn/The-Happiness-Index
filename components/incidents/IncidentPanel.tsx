@@ -9,7 +9,7 @@ export function IncidentPanel() {
   if (activeIncidents.length === 0) {
     return (
       <div className="flex flex-col gap-1">
-        <div className="text-xs text-neutral-500 uppercase tracking-widest mb-3">
+        <div className="text-xs text-neutral-500 uppercase tracking-widest mb-3 sticky top-0 bg-neutral-950 pb-1">
           Incidents
         </div>
         <p className="text-xs text-neutral-600 italic">No active incidents.</p>
@@ -22,7 +22,7 @@ export function IncidentPanel() {
 
   return (
     <div className="flex flex-col gap-1">
-      <div className="text-xs text-neutral-500 uppercase tracking-widest mb-3">
+      <div className="text-xs text-neutral-500 uppercase tracking-widest mb-3 sticky top-0 bg-neutral-950 pb-1">
         Incidents
       </div>
 

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 48" width="32" height="48">
+  <!-- Dead tree — Stage 3-4, bare branches -->
+  <!-- Trunk left -->
+  <polygon points="13,30 16,28 16,44 13,46" fill="#6a5540"/>
+  <!-- Trunk right -->
+  <polygon points="16,28 19,30 19,46 16,44" fill="#4a3520"/>
+  <!-- Trunk top -->
+  <polygon points="13,30 16,28 19,30 16,32" fill="#7a6550"/>
+  <!-- Main branches -->
+  <!-- Branch left -->
+  <line x1="15" y1="28" x2="7" y2="18" stroke="#5a4530" stroke-width="2"/>
+  <line x1="7" y1="18" x2="4" y2="12" stroke="#5a4530" stroke-width="1.5"/>
+  <line x1="7" y1="18" x2="9" y2="11" stroke="#5a4530" stroke-width="1.2"/>
+  <!-- Branch right -->
+  <line x1="17" y1="26" x2="24" y2="16" stroke="#5a4530" stroke-width="2"/>
+  <line x1="24" y1="16" x2="28" y2="10" stroke="#5a4530" stroke-width="1.5"/>
+  <line x1="24" y1="16" x2="22" y2="9" stroke="#5a4530" stroke-width="1.2"/>
+  <!-- Branch center up -->
+  <line x1="16" y1="28" x2="16" y2="16" stroke="#5a4530" stroke-width="1.8"/>
+  <line x1="16" y1="22" x2="13" y2="16" stroke="#5a4530" stroke-width="1"/>
+  <line x1="16" y1="20" x2="19" y2="14" stroke="#5a4530" stroke-width="1"/>
+  <!-- Single dead leaf remnant -->
+  <ellipse cx="5" cy="11" rx="2" ry="1.2" fill="#887733" opacity="0.5" transform="rotate(-20,5,11)"/>
+</svg>

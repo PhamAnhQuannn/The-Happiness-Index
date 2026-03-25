@@ -12,6 +12,7 @@ export const DISTRICTS: District[] = [
     theme: 'Housing, family life, community belonging',
     currentMoodLabel: 'Settled',
     livelinessLevel: 5,
+    conditionTag: 'managed',
     hasAlert: false,
     policySensitivityNotes: [
       'Sensitive to Stress-related incidents',
@@ -24,6 +25,7 @@ export const DISTRICTS: District[] = [
     theme: 'Work, manufacturing, labor productivity',
     currentMoodLabel: 'Productive',
     livelinessLevel: 5,
+    conditionTag: 'optimized',
     hasAlert: false,
     policySensitivityNotes: [
       'Work-optimization policies have strongest impact here',
@@ -36,6 +38,7 @@ export const DISTRICTS: District[] = [
     theme: 'Schools, youth development, knowledge transmission',
     currentMoodLabel: 'Engaged',
     livelinessLevel: 5,
+    conditionTag: 'hopeful',
     hasAlert: false,
     policySensitivityNotes: [
       'Youth disengagement incidents begin here',
@@ -48,6 +51,7 @@ export const DISTRICTS: District[] = [
     theme: 'Art, public expression, spontaneous gathering',
     currentMoodLabel: 'Vibrant',
     livelinessLevel: 5,
+    conditionTag: 'alive',
     hasAlert: false,
     policySensitivityNotes: [
       'Most sensitive district to hidden value erosion',
@@ -60,6 +64,7 @@ export const DISTRICTS: District[] = [
     theme: 'Movement, infrastructure, public order in shared spaces',
     currentMoodLabel: 'Flowing',
     livelinessLevel: 5,
+    conditionTag: 'active',
     hasAlert: false,
     policySensitivityNotes: [
       'Unrest and protest incidents surface here first',

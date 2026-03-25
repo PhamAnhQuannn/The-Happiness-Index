@@ -27,6 +27,7 @@ import { generateFeedback } from '@/lib/feedbackEngine'
 const GOVERNANCE_CAPACITY = 5
 const HAND_SIZE = 3
 const MAX_POLICIES_PER_TURN = 2
+const BASELINE_RESPONSE_ID = 'POL-01'
 
 // Incident count per phase (docs/11-balance-values.md)
 const INCIDENT_COUNT: Record<Phase, number> = {
@@ -76,6 +77,87 @@ function derivePhase(turn: number): Phase {
   return 'late'
 }
 
+function isCoercivePolicy(id: string): boolean {
+  return getPolicyById(id)?.specialRules?.includes('coercive') ?? false
+}
+
+function raisesCompliance(id: string): boolean {
+  return getPolicyById(id)?.specialRules?.includes('raises-compliance') ?? false
+}
+
+function districtsAreStable(state: GameState): boolean {
+  return state.districts.every((d) =>
+    ['managed', 'optimized', 'hopeful', 'alive', 'active'].includes(d.conditionTag)
+  )
+}
+
+function applyHiddenPenaltyBands(
+  hiddenValues: HiddenValueSet,
+  controlPressure: number
+): Partial<MetricSet> {
+  const deltas: Partial<MetricSet> = {}
+
+  if (hiddenValues.socialVitality <= 20) {
+    deltas.happinessIndex = (deltas.happinessIndex ?? 0) - 2
+  } else if (hiddenValues.socialVitality <= 45) {
+    deltas.happinessIndex = (deltas.happinessIndex ?? 0) - 1
+  }
+
+  if (hiddenValues.hope <= 20) {
+    deltas.stress = (deltas.stress ?? 0) + 2
+  }
+
+  if (hiddenValues.freedom <= 20) {
+    deltas.publicTrust = (deltas.publicTrust ?? 0) - 2
+  } else if (hiddenValues.freedom <= 45) {
+    deltas.publicTrust = (deltas.publicTrust ?? 0) - 1
+  }
+
+  if (controlPressure >= 3) {
+    deltas.publicTrust = (deltas.publicTrust ?? 0) - 1
+  }
+
+  return deltas
+}
+
+/**
+ * Compute dynamic weight modifiers for an incident based on current game state.
+ * Higher weight = more likely to be drawn this turn.
+ * Docs: docs/03-rules-systems.md §Incident Weighting
+ */
+function incidentWeightModifier(
+  inc: { id: string; district: string; hiddenCauses: string[] },
+  hiddenValues: HiddenValueSet,
+  controlPressure: number,
+  districts: GameState['districts']
+): number {
+  let bonus = 0
+
+  // District condition modifier: strained/collapsed districts surface incidents faster
+  const districtObj = districts.find((d) => d.id === inc.district)
+  if (districtObj) {
+    const tag = districtObj.conditionTag
+    if (['hollow', 'vacant'].includes(tag)) bonus += 4
+    else if (['strained', 'backlogged', 'brittle', 'thinned'].includes(tag)) bonus += 2
+  }
+
+  // Hidden value resonance: if this incident's hidden cause is already low, it's more likely
+  for (const cause of inc.hiddenCauses) {
+    const val = hiddenValues[cause as keyof HiddenValueSet]
+    if (val !== undefined) {
+      if (val <= 20) bonus += 3
+      else if (val <= 40) bonus += 1
+    }
+  }
+
+  // Control pressure amplifies civil unrest / misinformation / resistance incidents
+  const resistanceIds = ['INC-02', 'INC-06', 'INC-07', 'INC-08', 'INC-10']
+  if (controlPressure >= 5 && resistanceIds.includes(inc.id)) bonus += 3
+  else if (controlPressure >= 3 && resistanceIds.includes(inc.id)) bonus += 1
+
+  return bonus
+}
+
 /**
  * Weighted random selection without replacement.
  * Picks `count` incidents from pool using weight values.
@@ -114,7 +196,8 @@ function weightedPick<T extends { weight: number }>(
 export function validatePolicySelection(
   selectedIds: string[],
   turn: number,
-  capacity: number
+  capacity: number,
+  state?: GameState
 ): { valid: boolean; reason?: string } {
   if (selectedIds.length > MAX_POLICIES_PER_TURN) {
     return { valid: false, reason: `Maximum ${MAX_POLICIES_PER_TURN} policies per turn.` }
@@ -125,6 +208,14 @@ export function validatePolicySelection(
     const policy = getPolicyById(id)
     if (!policy) return { valid: false, reason: `Unknown policy: ${id}` }
     if (policy.unlockTurn > turn) return { valid: false, reason: `${policy.name} not yet unlocked.` }
+    if (id === 'POL-16' && state) {
+      if (state.controlPressure < 4) {
+        return { valid: false, reason: 'System Completion requires Control Pressure 4+.' }
+      }
+      if (!districtsAreStable(state)) {
+        return { valid: false, reason: 'System Completion requires all districts stable.' }
+      }
+    }
     totalCost += policy.cost
   }
 
@@ -139,11 +230,11 @@ export function validatePolicySelection(
 
 export function drawPolicyHand(turn: number, previousHandIds: string[] = []): string[] {
   const available = POLICIES.filter(
-    (p) => p.unlockTurn <= turn
+    (p) => p.unlockTurn <= turn && p.id !== BASELINE_RESPONSE_ID
   )
 
   if (available.length <= HAND_SIZE) {
-    return available.map((p) => p.id)
+    return [BASELINE_RESPONSE_ID, ...available.map((p) => p.id)]
   }
 
   // Shuffle and pick — prefer policies not in last hand for variety
@@ -162,7 +253,7 @@ export function drawPolicyHand(turn: number, previousHandIds: string[] = []): st
     }
   }
 
-  return picked
+  return [BASELINE_RESPONSE_ID, ...picked]
 }
 
 // ── Main: simulate one full turn ─────────────
@@ -196,10 +287,21 @@ export function simulateTurn(prevState: GameState): GameState {
 
   // ── Step 4: Generate new incidents ───────────
   const existingIds = carriedIncidents.map((ai) => ai.incidentId)
-  const pool = getIncidentsAvailableAtTurn(turn, existingIds).filter(
+  const rawPool = getIncidentsAvailableAtTurn(turn, existingIds).filter(
     (inc) =>
       inc.canRepeat || !prevState.activeIncidents.some((ai) => ai.incidentId === inc.id)
   )
+
+  // Apply dynamic weight modifiers based on current game state
+  const pool = rawPool.map((inc) => ({
+    ...inc,
+    weight: inc.weight + incidentWeightModifier(
+      inc,
+      prevState.hiddenValues,
+      prevState.controlPressure,
+      prevState.districts
+    ),
+  }))
 
   const targetCount = INCIDENT_COUNT[phase]
   const newCount = Math.max(0, targetCount - carriedIncidents.length)
@@ -218,7 +320,7 @@ export function simulateTurn(prevState: GameState): GameState {
 
   // ── Step 6: Selection is done by the player (in store) before simulateTurn is called ──
   const selectedIds = prevState.selectedPolicyIds
-  const validation = validatePolicySelection(selectedIds, turn, remainingCapacity)
+  const validation = validatePolicySelection(selectedIds, turn, remainingCapacity, prevState)
   if (!validation.valid) {
     // Silently clear invalid selection (UI should have prevented this)
     prevState = { ...prevState, selectedPolicyIds: [] }
@@ -227,6 +329,8 @@ export function simulateTurn(prevState: GameState): GameState {
   // ── Aggregate deltas ─────────────────────────
   const totalMetricDeltas: Partial<MetricSet> = {}
   const totalHiddenDeltas: Partial<HiddenValueSet> = {}
+  let nextControlPressure = prevState.controlPressure
+  let nextCompliance = prevState.compliance
 
   const addMetricDelta = (deltas: Partial<MetricSet>) => {
     for (const key of Object.keys(deltas) as (keyof MetricSet)[]) {
@@ -282,6 +386,9 @@ export function simulateTurn(prevState: GameState): GameState {
     addMetricDelta(policy.immediateEffects)
     addHiddenDelta(policy.hiddenImpact)
 
+  if (isCoercivePolicy(sid)) nextControlPressure += 1
+  if (raisesCompliance(sid)) nextCompliance += sid === 'POL-16' ? 15 : 6
+
     // Track resolved incidents
     resolvedIncidentIds.push(...policy.resolvedIncidentIds)
 
@@ -330,10 +437,15 @@ export function simulateTurn(prevState: GameState): GameState {
   // ── Step 11: Apply all accumulated deltas ────
   const metrics = applyDeltasToMetrics(prevState.metrics, totalMetricDeltas)
   const hiddenValues = applyDeltasToHidden(prevState.hiddenValues, totalHiddenDeltas)
+  const metricsAfterPenaltyBands = applyDeltasToMetrics(
+    metrics,
+    applyHiddenPenaltyBands(hiddenValues, nextControlPressure)
+  )
 
   // ── Step 12: Update atmosphere stage ─────────
-  const newStage = computeStage(prevStage, turn, hiddenValues)
-  const updatedDistricts = applyStageToDistricts(prevState.districts, newStage)
+  const isSystemCompletion = selectedIds.includes('POL-16')
+  const newStage = computeStage(prevStage, turn, hiddenValues, nextControlPressure, isSystemCompletion)
+  const updatedDistricts = applyStageToDistricts(prevState.districts, newStage, hiddenValues, nextControlPressure)
 
   // ── Step 13: Generate feedback ───────────────
   const feedback = generateFeedback(
@@ -353,7 +465,9 @@ export function simulateTurn(prevState: GameState): GameState {
     phase,
     stage: newStage,
     remainingCapacity,
-    metrics,
+  controlPressure: clamp(nextControlPressure),
+  compliance: clamp(nextCompliance),
+  metrics: metricsAfterPenaltyBands,
     hiddenValues,
     districts: updatedDistricts,
     activeIncidents: remainingIncidents,
@@ -371,7 +485,6 @@ export function simulateTurn(prevState: GameState): GameState {
   }
 
   // Win check only on final turn (or if system-completion card used)
-  const isSystemCompletion = selectedIds.includes('POL-16')
   if (turn >= prevState.maxTurns || isSystemCompletion) {
     const winCheck = checkWin(partialState)
     if (winCheck.won) {

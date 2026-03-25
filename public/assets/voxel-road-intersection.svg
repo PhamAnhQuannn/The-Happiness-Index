@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 32" width="64" height="32">
+  <!-- Intersection surface -->
+  <polygon points="0,16 32,0 64,16 32,32" fill="#555566"/>
+  <!-- Crosswalk stripes horizontal -->
+  <polygon points="10,14 14,12 14,20 10,22" fill="#aaaaaa" opacity="0.35"/>
+  <polygon points="16,11 20,9 20,17 16,19" fill="#aaaaaa" opacity="0.35"/>
+  <!-- Crosswalk stripes vertical -->
+  <polygon points="44,12 48,14 44,20 40,18" fill="#aaaaaa" opacity="0.35"/>
+  <polygon points="50,9 54,11 50,17 46,15" fill="#aaaaaa" opacity="0.35"/>
+  <!-- Center dot -->
+  <polygon points="30,15 34,13 34,19 30,21" fill="#ffffaa" opacity="0.4"/>
+</svg>

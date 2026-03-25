@@ -31,7 +31,7 @@ export const POLICIES: Policy[] = [
     resolvedIncidentIds: ['INC-01'],
     districtNotes: 'Most effective in Residential.',
     flavorLine: 'Every resident deserves to feel monitored — we mean, supported.',
-    specialRules: ['Cannot be played in same turn as POL-06'],
+  specialRules: ['Cannot be played in same turn as POL-06', 'baseline-response'],
   },
 
   {
@@ -136,7 +136,7 @@ export const POLICIES: Policy[] = [
     hiddenImpact: { freedom: -6, hope: -3, socialVitality: -4 },
     resolvedIncidentIds: ['INC-06', 'INC-01'],
     flavorLine: 'Early detection prevents suffering. Data is compassion.',
-    specialRules: ['Cannot be played in same turn as POL-01'],
+  specialRules: ['Cannot be played in same turn as POL-01', 'coercive', 'raises-compliance'],
   },
 
   {
@@ -183,7 +183,8 @@ export const POLICIES: Policy[] = [
     hiddenImpact: { creativity: -7, freedom: -6, socialVitality: -5 },
     resolvedIncidentIds: ['INC-08'],
     districtNotes: 'Cultural district becomes quieter. No alert markers appear but liveliness drops.',
-    flavorLine: 'Not all expression is equal. Some disrupts. We optimize for the other kind.',
+  flavorLine: 'Not all expression is equal. Some disrupts. We optimize for the other kind.',
+  specialRules: ['coercive', 'raises-compliance'],
   },
 
   {
@@ -221,7 +222,8 @@ export const POLICIES: Policy[] = [
     ],
     hiddenImpact: { socialVitality: -5, freedom: -3 },
     resolvedIncidentIds: ['INC-10'],
-    flavorLine: 'A well-designed city does not require its citizens to decide where to stand.',
+  flavorLine: 'A well-designed city does not require its citizens to decide where to stand.',
+  specialRules: ['coercive', 'raises-compliance'],
   },
 
   {
@@ -238,7 +240,8 @@ export const POLICIES: Policy[] = [
     hiddenImpact: { freedom: -4, socialVitality: -3, hope: -2 },
     resolvedIncidentIds: ['INC-05', 'INC-06'],
     districtNotes: 'Strongest in Residential. Transit secondarily.',
-    flavorLine: 'Harmony is not silence. But silence is rarely the problem.',
+  flavorLine: 'Harmony is not silence. But silence is rarely the problem.',
+  specialRules: ['coercive'],
   },
 
   // ── LATE PHASE (turns 9–12) — 5 policies ────
@@ -262,7 +265,8 @@ export const POLICIES: Policy[] = [
     ],
     hiddenImpact: { freedom: -8, creativity: -6, socialVitality: -8, hope: -5 },
     resolvedIncidentIds: ['INC-11', 'INC-12'],
-    flavorLine: 'Structure is the highest form of care. We provide structure.',
+  flavorLine: 'Structure is the highest form of care. We provide structure.',
+  specialRules: ['coercive', 'raises-compliance'],
   },
 
   {
@@ -278,7 +282,8 @@ export const POLICIES: Policy[] = [
     delayedEffects: [],
     hiddenImpact: { freedom: -9, hope: -7, creativity: -6, socialVitality: -7 },
     resolvedIncidentIds: ['INC-09', 'INC-13'],
-    flavorLine: 'We do not suppress feeling. We protect citizens from its extremes.',
+  flavorLine: 'We do not suppress feeling. We protect citizens from its extremes.',
+  specialRules: ['coercive', 'raises-compliance'],
   },
 
   {
@@ -301,7 +306,8 @@ export const POLICIES: Policy[] = [
     hiddenImpact: { hope: -8, creativity: -6, socialVitality: -5 },
     resolvedIncidentIds: ['INC-07', 'INC-14'],
     districtNotes: 'Industrial only.',
-    flavorLine: 'When the work is done correctly, it does not require a person.',
+  flavorLine: 'When the work is done correctly, it does not require a person.',
+  specialRules: ['coercive', 'raises-compliance'],
   },
 
   {
@@ -317,7 +323,8 @@ export const POLICIES: Policy[] = [
     delayedEffects: [],
     hiddenImpact: { freedom: -7, creativity: -5, socialVitality: -4 },
     resolvedIncidentIds: ['INC-02', 'INC-11'],
-    flavorLine: 'A city with one voice does not argue with itself. It improves.',
+  flavorLine: 'A city with one voice does not argue with itself. It improves.',
+  specialRules: ['coercive', 'raises-compliance'],
   },
 
   {
@@ -351,6 +358,11 @@ export const POLICIES: Policy[] = [
       'Consumes all 5 Governance Capacity',
       'Cannot be combined with any other policy',
       'Triggers Quiet Utopia ending evaluation regardless of Social Vitality',
+      'coercive',
+      'raises-compliance',
+      'requires-control-pressure-4',
+      'requires-all-districts-stable',
+      'forces-stage-4',
     ],
   },
 ]

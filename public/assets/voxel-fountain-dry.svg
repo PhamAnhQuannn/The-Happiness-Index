@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 56" width="32" height="56">
+  <!-- Dry fountain — Stage 4, cracked and empty -->
+  <!-- Basin top face — cracked, dry -->
+  <polygon points="4,32 16,24 28,32 16,40" fill="#998877"/>
+  <!-- Basin left -->
+  <polygon points="4,32 4,40 16,48 16,40" fill="#887766"/>
+  <!-- Basin right -->
+  <polygon points="16,40 28,32 28,40 16,48" fill="#776655"/>
+  <!-- Dry inner basin -->
+  <polygon points="7,32 16,27 25,32 16,37" fill="#aa9977" opacity="0.8"/>
+  <!-- Crack lines on basin -->
+  <line x1="10" y1="30" x2="16" y2="34" stroke="#665544" stroke-width="0.8" opacity="0.7"/>
+  <line x1="16" y1="34" x2="20" y2="32" stroke="#665544" stroke-width="0.8" opacity="0.7"/>
+  <line x1="14" y1="28" x2="12" y2="33" stroke="#665544" stroke-width="0.6" opacity="0.5"/>
+  <!-- Center pillar — broken top -->
+  <polygon points="13,22 16,20 19,22 16,24" fill="#9a8877"/>
+  <polygon points="13,22 13,32 16,34 16,24" fill="#887766"/>
+  <polygon points="16,24 19,22 19,32 16,34" fill="#776655"/>
+  <!-- Broken tip (chipped) -->
+  <polygon points="14,20 16,18 17,19 15,21" fill="#776655" opacity="0.8"/>
+  <!-- Dead leaves in basin -->
+  <ellipse cx="12" cy="33" rx="2" ry="1" fill="#887733" opacity="0.7" transform="rotate(-10,12,33)"/>
+  <ellipse cx="19" cy="31" rx="1.5" ry="0.8" fill="#998844" opacity="0.7" transform="rotate(15,19,31)"/>
+</svg>

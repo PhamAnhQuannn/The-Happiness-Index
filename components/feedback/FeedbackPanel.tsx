@@ -40,13 +40,9 @@ export function FeedbackPanel() {
     : []
 
   return (
-    <div
-      className={`border-t pt-3 mt-3 transition-colors duration-[6000ms] ${
-        isStage4 ? 'border-neutral-900' : 'border-neutral-800'
-      }`}
-    >
+    <div className="transition-colors duration-[6000ms]">
       <div
-        className={`text-xs uppercase tracking-widest mb-2 transition-colors duration-[6000ms] ${
+        className={`text-xs uppercase tracking-widest mb-2 sticky top-0 bg-neutral-950 pb-1 transition-colors duration-[6000ms] ${
           isStage4 ? 'text-neutral-700' : 'text-neutral-500'
         }`}
       >

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 88" width="72" height="88">
+  <!-- Government building — tall, formal, imposing -->
+  <!-- Top face -->
+  <polygon points="8,26 36,10 64,26 36,42" fill="#cccccc"/>
+  <!-- Left face -->
+  <polygon points="8,26 8,68 36,84 36,42" fill="#aaaaaa"/>
+  <!-- Right face -->
+  <polygon points="36,42 64,26 64,68 36,84" fill="#888888"/>
+  <!-- Columns on left face -->
+  <polygon points="11,36 13,35 13,66 11,67" fill="#999999"/>
+  <polygon points="15,34 17,33 17,64 15,65" fill="#999999"/>
+  <polygon points="19,32 21,31 21,62 19,63" fill="#999999"/>
+  <polygon points="23,30 25,29 25,60 23,61" fill="#999999"/>
+  <!-- Columns on right face -->
+  <polygon points="40,44 42,43 42,72 40,73" fill="#777777"/>
+  <polygon points="44,42 46,41 46,70 44,71" fill="#777777"/>
+  <polygon points="48,40 50,39 50,68 48,69" fill="#777777"/>
+  <polygon points="52,38 54,37 54,66 52,67" fill="#777777"/>
+  <!-- Entrance steps left -->
+  <polygon points="24,62 30,59 30,66 24,69" fill="#999999"/>
+  <polygon points="23,64 30,61 30,69 23,72" fill="#888888"/>
+  <!-- Entrance door -->
+  <polygon points="26,54 32,51 32,62 26,65" fill="#555555"/>
+  <!-- Flag on top -->
+  <line x1="36" y1="10" x2="36" y2="2" stroke="#888888" stroke-width="1"/>
+  <polygon points="36,2 44,5 36,8" fill="#cc4444"/>
+</svg>

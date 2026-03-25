@@ -8,6 +8,7 @@ import type {
   GameStatus,
   LossReason,
   EndingRecord,
+  EndingProfile,
 } from '@/types'
 import { ENDING_FLAVOR } from '@/data/feedback'
 
@@ -30,6 +31,22 @@ const FAIL_THRESHOLDS = {
 }
 
 const QUIET_UTOPIA_SOCIAL_VITALITY = 20
+
+function hiddenAverage(state: GameState): number {
+  const h = state.hiddenValues
+  return (h.freedom + h.hope + h.creativity + h.socialVitality) / 4
+}
+
+function deriveEndingProfile(state: GameState): EndingProfile {
+  const h = state.hiddenValues
+  const avg = hiddenAverage(state)
+  const hiddenOver35 = [h.freedom, h.hope, h.creativity, h.socialVitality].filter((v) => v > 35).length
+
+  if (h.socialVitality <= 20 || avg <= 25) return 'quiet-utopia'
+  if (h.freedom <= 20 && h.creativity <= 20) return 'sterile-stability'
+  if (hiddenOver35 >= 3) return 'utopia-achieved'
+  return 'managed-survival'
+}
 
 // ── Failure check (runs every turn) ──────────
 
@@ -67,7 +84,6 @@ export type WinCheck = { won: false } | { won: true; status: 'won-utopia' | 'won
 
 export function checkWin(state: GameState): WinCheck {
   const m = state.metrics
-  const sv = state.hiddenValues.socialVitality
 
   const allMetricsMet =
     m.happinessIndex >= WIN_THRESHOLDS.happinessIndex &&
@@ -78,8 +94,8 @@ export function checkWin(state: GameState): WinCheck {
 
   if (!allMetricsMet) return { won: false }
 
-  // Quiet Utopia: success metrics met but Social Vitality collapsed
-  if (sv <= QUIET_UTOPIA_SOCIAL_VITALITY) {
+  const profile = deriveEndingProfile(state)
+  if (profile === 'quiet-utopia' || state.hiddenValues.socialVitality <= QUIET_UTOPIA_SOCIAL_VITALITY) {
     return { won: true, status: 'won-quiet-utopia' }
   }
 
@@ -122,6 +138,7 @@ export function buildEndingRecord(
 
   return {
     status,
+    profile: status === 'lost' ? undefined : deriveEndingProfile(state),
     lossReason,
     finalTurn: state.turn,
     finalMetrics: { ...state.metrics },

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" preserveAspectRatio="none">
+  <!-- Heavy fog/grey wash — Stage 3-4 -->
+  <defs>
+    <radialGradient id="greyWash" cx="50%" cy="40%" r="75%">
+      <stop offset="0%" stop-color="#888899" stop-opacity="0.1"/>
+      <stop offset="60%" stop-color="#778899" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#556677" stop-opacity="0.55"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#greyWash)"/>
+  <!-- Desaturating grey film -->
+  <rect width="800" height="600" fill="#778899" opacity="0.2"/>
+</svg>

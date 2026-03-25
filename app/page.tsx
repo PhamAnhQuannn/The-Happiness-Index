@@ -9,6 +9,7 @@ import { IncidentPanel } from '@/components/incidents/IncidentPanel'
 import { PolicyPanel } from '@/components/policies/PolicyPanel'
 import { FeedbackPanel } from '@/components/feedback/FeedbackPanel'
 import { EndingScreen } from '@/components/endings/EndingScreen'
+import { CityScenePanel } from '@/components/city/CityScenePanel'
 import { stageCSSFilter } from '@/lib/stageEngine'
 import { drawPolicyHand } from '@/lib/turnEngine'
 import { getIncidentsAvailableAtTurn } from '@/data/incidents'
@@ -117,7 +118,7 @@ export default function GamePage() {
 
   return (
     <div
-      className="min-h-screen bg-neutral-950 text-neutral-200 transition-all duration-[6000ms]"
+      className="h-screen overflow-hidden bg-neutral-950 text-neutral-200 transition-all duration-[6000ms] flex flex-col"
       style={{ filter: cssFilter }}
     >
       {/* Stage transition flash — a brief white veil that marks the exact moment */}
@@ -128,8 +129,8 @@ export default function GamePage() {
         style={{ opacity: 0 }}
       />
 
-      {/* Header */}
-      <header className="border-b border-neutral-800 px-6 py-3 flex justify-between items-center">
+      {/* Header — fixed height */}
+      <header className="shrink-0 border-b border-neutral-800 px-6 py-3 flex justify-between items-center">
         <h1
           className={`text-sm font-light tracking-[0.25em] uppercase transition-colors duration-[6000ms] ${
             isStage4 ? 'text-neutral-600' : 'text-neutral-400'
@@ -160,20 +161,24 @@ export default function GamePage() {
         </div>
       </header>
 
-      {/* Main grid */}
-      <main className="grid grid-cols-[260px_1fr] min-h-[calc(100vh-49px)]">
-        {/* Left column: overview + districts */}
+      {/* Main grid — 3 columns: sidebar | city scene | right panel. Fills remaining height. */}
+      <main className="grid grid-cols-[240px_1fr_320px] flex-1 min-h-0">
+
+        {/* Left column: overview + districts + sticky End Turn */}
         <aside
-          className={`border-r p-5 flex flex-col gap-8 transition-colors duration-[6000ms] ${
+          className={`border-r flex flex-col overflow-hidden transition-colors duration-[6000ms] ${
             isStage4 ? 'border-neutral-900' : 'border-neutral-800'
           }`}
         >
-          <CityOverviewPanel />
-          <DistrictPanel />
+          {/* Scrollable content */}
+          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-6 min-h-0">
+            <CityOverviewPanel />
+            <DistrictPanel />
+          </div>
 
-          {/* End Turn button */}
+          {/* End Turn — always visible at bottom */}
           {status === 'playing' && (
-            <div className="mt-auto">
+            <div className={`shrink-0 px-4 py-3 border-t transition-colors duration-[6000ms] ${isStage4 ? 'border-neutral-900' : 'border-neutral-800'}`}>
               <button
                 onClick={handleEndTurn}
                 className={`w-full py-2.5 text-xs uppercase tracking-widest border rounded transition-colors duration-200 ${
@@ -194,11 +199,31 @@ export default function GamePage() {
           )}
         </aside>
 
-        {/* Right column: incidents + policies + feedback */}
-        <section className="p-5 flex flex-col gap-8">
-          <IncidentPanel />
-          <PolicyPanel />
-          <FeedbackPanel />
+        {/* Center column: City Scene */}
+        <section className="p-4 flex flex-col items-center justify-center overflow-hidden">
+          <CityScenePanel />
+        </section>
+
+        {/* Right column: incidents (fixed) + policies (scrollable) + feedback (footer) */}
+        <section
+          className={`border-l flex flex-col overflow-hidden transition-colors duration-[6000ms] ${
+            isStage4 ? 'border-neutral-900' : 'border-neutral-800'
+          }`}
+        >
+          {/* Incidents — fixed, capped height, own scroll */}
+          <div className={`shrink-0 px-4 pt-4 pb-3 border-b max-h-[38%] overflow-y-auto transition-colors duration-[6000ms] ${isStage4 ? 'border-neutral-900' : 'border-neutral-800'}`}>
+            <IncidentPanel />
+          </div>
+
+          {/* Policies — flex-fill, own scroll */}
+          <div className="flex-1 min-h-0 overflow-y-auto px-4 py-3">
+            <PolicyPanel />
+          </div>
+
+          {/* Feedback — compact footer, own scroll if needed */}
+          <div className={`shrink-0 px-4 py-3 border-t max-h-[28%] overflow-y-auto transition-colors duration-[6000ms] ${isStage4 ? 'border-neutral-900' : 'border-neutral-800'}`}>
+            <FeedbackPanel />
+          </div>
         </section>
       </main>
 

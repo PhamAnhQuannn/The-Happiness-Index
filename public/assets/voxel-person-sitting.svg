@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 32" width="20" height="32">
+  <!-- Person sitting on bench — relaxed, Stage 1-2 -->
+  <!-- Head -->
+  <circle cx="10" cy="6" r="4" fill="#f5c09a"/>
+  <!-- Torso leaning slightly -->
+  <polygon points="7,10 13,10 13,20 7,20" fill="#cc6644"/>
+  <!-- Arm resting on lap -->
+  <line x1="7" y1="13" x2="4" y2="17" stroke="#cc6644" stroke-width="2.5"/>
+  <line x1="4" y1="17" x2="7" y2="19" stroke="#cc6644" stroke-width="2"/>
+  <!-- Other arm pointing out gesturing -->
+  <line x1="13" y1="12" x2="17" y2="15" stroke="#cc6644" stroke-width="2.5"/>
+  <!-- Legs bent (sitting) -->
+  <line x1="9" y1="20" x2="6" y2="24" stroke="#334455" stroke-width="2.5"/>
+  <line x1="6" y1="24" x2="6" y2="30" stroke="#334455" stroke-width="2.5"/>
+  <line x1="11" y1="20" x2="14" y2="24" stroke="#334455" stroke-width="2.5"/>
+  <line x1="14" y1="24" x2="14" y2="30" stroke="#334455" stroke-width="2.5"/>
+  <!-- Feet -->
+  <line x1="4" y1="30" x2="8" y2="30" stroke="#222222" stroke-width="2"/>
+  <line x1="12" y1="30" x2="16" y2="30" stroke="#222222" stroke-width="2"/>
+</svg>

@@ -51,6 +51,8 @@ function buildInitialState(): GameState {
 
     governanceCapacity: 5,
     remainingCapacity: 5,
+  controlPressure: 0,
+  compliance: 35,
 
     metrics: { ...INITIAL_METRICS },
     hiddenValues: { ...INITIAL_HIDDEN },
